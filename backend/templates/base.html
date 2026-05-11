@@ -1,0 +1,28 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PlantOps{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/plantops-ui.css' %}">
+
+    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <script>
+        document.addEventListener("htmx:configRequest", (event) => {
+            event.detail.headers["X-CSRFToken"] = "{{ csrf_token }}";
+        });
+    </script>
+
+    <main class="po-shell">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

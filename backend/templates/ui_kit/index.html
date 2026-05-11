@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "UI Kit" %} - PlantOps{% endblock %}
+
+{% block content %}
+<div class="po-app">
+    <aside class="po-sidebar">
+        <a class="po-brand" href="/ui-kit/">
+            <span class="po-brand-mark">P</span>
+            <span>PlantOps</span>
+        </a>
+        <nav class="po-nav" aria-label="{% translate 'Primary' %}">
+            <a class="po-nav-link is-active" href="#overview">Overview</a>
+            <a class="po-nav-link" href="#actions">Actions</a>
+            <a class="po-nav-link" href="#forms">Forms</a>
+            <a class="po-nav-link" href="#tables">Tables</a>
+            <a class="po-nav-link" href="#htmx">HTMX</a>
+        </nav>
+        <button class="po-btn po-btn-secondary po-mobile-menu" type="button">Menu</button>
+    </aside>
+
+    <section class="po-page">
+        <header class="po-topbar" id="overview">
+            <div class="po-title-block">
+                <span class="po-eyebrow">Design system</span>
+                <h1 class="po-title">PlantOps UI Kit</h1>
+                <p class="po-subtitle">Shared operational interface patterns for Django templates, HTMX fragments, and React screens.</p>
+            </div>
+            <div class="po-actions">
+                <a class="po-btn po-btn-secondary" href="/admin/">Admin</a>
+                <button class="po-btn po-btn-primary" type="button">New task</button>
+            </div>
+        </header>
+
+        <div class="po-grid po-grid-4">
+            <article class="po-card po-kpi">
+                <span class="po-kpi-label">Active planters</span>
+                <strong class="po-kpi-value">428</strong>
+                <span class="po-kpi-trend">+12 this week</span>
+            </article>
+            <article class="po-card po-kpi">
+                <span class="po-kpi-label">Moisture average</span>
+                <strong class="po-kpi-value">71%</strong>
+                <span class="po-kpi-trend">Stable</span>
+            </article>
+            <article class="po-card po-kpi">
+                <span class="po-kpi-label">Open alerts</span>
+                <strong class="po-kpi-value">9</strong>
+                <span class="po-status po-status-warning">Needs review</span>
+            </article>
+            <article class="po-card po-kpi">
+                <span class="po-kpi-label">Automation uptime</span>
+                <strong class="po-kpi-value">99.3%</strong>
+                <span class="po-kpi-trend">Healthy</span>
+            </article>
+        </div>
+
+        <section class="po-section" id="actions">
+            <div class="po-section-header">
+                <div>
+                    <h2 class="po-section-title">Actions, badges, and statuses</h2>
+                    <p class="po-help">Buttons stay compact and predictable for repeated operational workflows.</p>
+                </div>
+                <div class="po-segmented" aria-label="Time range">
+                    <button class="is-active" type="button">24h</button>
+                    <button type="button">7d</button>
+                    <button type="button">30d</button>
+                </div>
+            </div>
+            <div class="po-panel po-stack">
+                <div class="po-inline">
+                    <button class="po-btn po-btn-primary" type="button">Save</button>
+                    <button class="po-btn po-btn-secondary" type="button">Preview</button>
+                    <button class="po-btn po-btn-ghost" type="button">Cancel</button>
+                    <button class="po-btn po-btn-danger" type="button">Disable</button>
+                    <button class="po-btn po-btn-secondary po-icon-btn" type="button" aria-label="Refresh">R</button>
+                </div>
+                <div class="po-inline">
+                    <span class="po-badge">Tenant ready</span>
+                    <span class="po-status po-status-ok">Online</span>
+                    <span class="po-status po-status-warning">Delayed</span>
+                    <span class="po-status po-status-danger">Offline</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="po-section">
+            <div class="po-section-header">
+                <h2 class="po-section-title">Color tokens</h2>
+            </div>
+            <div class="po-swatch-grid">
+                <div class="po-swatch"><div class="po-swatch-color" style="background:#246b45"></div><div class="po-swatch-body">Primary<br>#246b45</div></div>
+                <div class="po-swatch"><div class="po-swatch-color" style="background:#2f6f8f"></div><div class="po-swatch-body">Accent<br>#2f6f8f</div></div>
+                <div class="po-swatch"><div class="po-swatch-color" style="background:#a15f07"></div><div class="po-swatch-body">Warning<br>#a15f07</div></div>
+                <div class="po-swatch"><div class="po-swatch-color" style="background:#b23a3a"></div><div class="po-swatch-body">Danger<br>#b23a3a</div></div>
+                <div class="po-swatch"><div class="po-swatch-color" style="background:#18211b"></div><div class="po-swatch-body">Ink<br>#18211b</div></div>
+                <div class="po-swatch"><div class="po-swatch-color" style="background:#f5f7f2"></div><div class="po-swatch-body">Background<br>#f5f7f2</div></div>
+            </div>
+        </section>
+
+        <section class="po-section" id="forms">
+            <div class="po-section-header">
+                <h2 class="po-section-title">Forms</h2>
+                <span class="po-badge">Django-ready</span>
+            </div>
+            <form class="po-panel po-form" hx-post="/ui-kit/sample/" hx-target="#htmx-result">
+                <div class="po-grid po-grid-2">
+                    <label class="po-field-group">
+                        <span class="po-label">Planter name</span>
+                        <input class="po-field" name="name" placeholder="Greenhouse row A" value="Greenhouse row A">
+                    </label>
+                    <label class="po-field-group">
+                        <span class="po-label">Irrigation profile</span>
+                        <select class="po-select" name="profile">
+                            <option>Balanced</option>
+                            <option>Dry climate</option>
+                            <option>Propagation</option>
+                        </select>
+                    </label>
+                </div>
+                <label class="po-field-group">
+                    <span class="po-label">Operator note</span>
+                    <textarea class="po-textarea" name="note">Check sensors after the evening irrigation run.</textarea>
+                </label>
+                <label class="po-check-row">
+                    <input type="checkbox" checked>
+                    <span>Notify team when thresholds are exceeded</span>
+                </label>
+                <div class="po-actions">
+                    <button class="po-btn po-btn-secondary" type="reset">Reset</button>
+                    <button class="po-btn po-btn-primary" type="submit">Send HTMX sample</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="po-section" id="tables">
+            <div class="po-section-header">
+                <div>
+                    <h2 class="po-section-title">Operational table</h2>
+                    <p class="po-help">Dense enough for scanning, with clear state and progress treatment.</p>
+                </div>
+                <div class="po-toolbar">
+                    <input class="po-field po-search" type="search" placeholder="Search planters">
+                </div>
+            </div>
+            <div class="po-table-wrap">
+                <table class="po-table">
+                    <thead>
+                        <tr>
+                            <th>Planter</th>
+                            <th>Zone</th>
+                            <th>Moisture</th>
+                            <th>Status</th>
+                            <th>Last reading</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Basil line 03</strong></td>
+                            <td>Greenhouse A</td>
+                            <td><div class="po-meter" aria-label="82 percent"><span style="width:82%"></span></div></td>
+                            <td><span class="po-status po-status-ok">Healthy</span></td>
+                            <td>2 min ago</td>
+                            <td><button class="po-btn po-btn-secondary" type="button">Open</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mint shelf 11</strong></td>
+                            <td>Retail room</td>
+                            <td><div class="po-meter" aria-label="44 percent"><span style="width:44%"></span></div></td>
+                            <td><span class="po-status po-status-warning">Watch</span></td>
+                            <td>9 min ago</td>
+                            <td><button class="po-btn po-btn-secondary" type="button">Open</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lavender bed 2</strong></td>
+                            <td>Outdoor north</td>
+                            <td><div class="po-meter" aria-label="18 percent"><span style="width:18%"></span></div></td>
+                            <td><span class="po-status po-status-danger">Dry</span></td>
+                            <td>18 min ago</td>
+                            <td><button class="po-btn po-btn-secondary" type="button">Open</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="po-section" id="htmx">
+            <div class="po-section-header">
+                <h2 class="po-section-title">HTMX partial state</h2>
+            </div>
+            <div id="htmx-result" class="po-alert">
+                <strong>Ready for fragment updates</strong>
+                <span class="po-muted">Submit the form above to replace this block with a server-rendered partial.</span>
+            </div>
+        </section>
+    </section>
+</div>
+{% endblock %}

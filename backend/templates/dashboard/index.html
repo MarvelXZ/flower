@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Dashboard" %} — PlantOps{% endblock %}
+
+{% block content %}
+<div class="po-app">
+    <aside class="po-sidebar">
+        <a class="po-brand" href="/">
+            <span class="po-brand-mark">P</span>
+            <span>PlantOps</span>
+        </a>
+        <nav class="po-nav" aria-label="{% translate 'Primary' %}">
+            <a class="po-nav-link is-active" href="#">{% translate "Dashboard" %}</a>
+            <a class="po-nav-link" href="/ui-kit/">{% translate "UI Kit" %}</a>
+            <a class="po-nav-link" href="/api/docs/">{% translate "API Docs" %}</a>
+        </nav>
+    </aside>
+    <section class="po-page">
+        <header class="po-topbar">
+            <div class="po-title-block">
+                <span class="po-eyebrow">{% translate "Operations" %}</span>
+                <h1 class="po-title">{% translate "PlantOps Dashboard" %}</h1>
+                <p class="po-subtitle">{% translate "Welcome to the PlantOps operations dashboard." %}</p>
+            </div>
+            <div class="po-actions">
+                <a class="po-btn po-btn-secondary" href="/ui-kit/">{% translate "Open UI Kit" %}</a>
+            </div>
+        </header>
+        <div class="po-grid po-grid-3">
+            <article class="po-card po-kpi">
+                <span class="po-kpi-label">{% translate "Active devices" %}</span>
+                <strong class="po-kpi-value">128</strong>
+                <span class="po-kpi-trend">{% translate "Healthy" %}</span>
+            </article>
+            <article class="po-card po-kpi">
+                <span class="po-kpi-label">{% translate "Alerts" %}</span>
+                <strong class="po-kpi-value">4</strong>
+                <span class="po-status po-status-warning">{% translate "Review" %}</span>
+            </article>
+            <article class="po-card po-kpi">
+                <span class="po-kpi-label">{% translate "Automation" %}</span>
+                <strong class="po-kpi-value">99%</strong>
+                <span class="po-status po-status-ok">{% translate "Online" %}</span>
+            </article>
+        </div>
+    </section>
+</div>
+{% endblock %}
