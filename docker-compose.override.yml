@@ -1,0 +1,8 @@
+services:
+  backend:
+    environment:
+      DJANGO_DEBUG: "True"
+
+  celery_worker:
+    environment:
+      DJANGO_DEBUG: "True"

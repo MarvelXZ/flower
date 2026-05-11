@@ -1,0 +1,1 @@
+DEFAULT_LOCATION_TIMEZONE = "Europe/Belgrade"

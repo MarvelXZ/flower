@@ -23,7 +23,7 @@ class TenantTask(Task):
         tenant_id = kwargs.pop("_tenant_id", None)
         if tenant_id:
             from django_tenants.utils import tenant_context
-            from apps.tenants.models import Client
+            from apps.tenancy.models import Client
 
             try:
                 tenant = Client.objects.get(id=tenant_id)

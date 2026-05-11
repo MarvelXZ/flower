@@ -1,4 +1,4 @@
-"""PlantOps URL Configuration."""
+"""Flower URL configuration."""
 
 from django.conf import settings
 from django.contrib import admin
@@ -9,9 +9,23 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
-from apps.core.views import DashboardView, UIKitView, ui_kit_sample
+from apps.core.views import (
+    DashboardView,
+    UIKitView,
+    core_health_live,
+    core_health_ready,
+    core_health_summary,
+    ui_kit_sample,
+)
 
 urlpatterns = [
+    # -----------------------------------------------------------------------
+    # Health & Monitoring
+    # -----------------------------------------------------------------------
+    path("health/", core_health_summary, name="health"),
+    path("health/live/", core_health_live, name="health-live"),
+    path("health/ready/", core_health_ready, name="health-ready"),
+
     # -----------------------------------------------------------------------
     # Admin
     # -----------------------------------------------------------------------
@@ -30,18 +44,21 @@ urlpatterns = [
     # -----------------------------------------------------------------------
     # Bounded Context APIs
     # -----------------------------------------------------------------------
+    path("api/b2b/v1/", include("apps.provider_ops.api.urls", namespace="provider_b2b")),
+    path("api/v1/tenancy/", include("apps.tenancy.api.urls", namespace="tenancy")),
+    path("api/v1/identity/", include("apps.identity.api.urls", namespace="identity")),
+    path("api/v1/locations/", include("apps.locations.api.urls", namespace="locations")),
+    path("api/v1/plants/", include("apps.plants.api.urls", namespace="plants")),
+    path("api/v1/pots/", include("apps.pots.api.urls", namespace="pots")),
+    path("api/v1/devices/", include("apps.devices.api.urls", namespace="devices")),
     path("api/v1/telemetry/", include("apps.telemetry.api.urls", namespace="telemetry")),
-    # path("api/v1/users/", include("apps.users.api.urls", namespace="users")),
-    # path("api/v1/locations/", include("apps.locations.api.urls", namespace="locations")),
-    # path("api/v1/planters/", include("apps.planters.api.urls", namespace="planters")),
-    # path("api/v1/plants/", include("apps.plants.api.urls", namespace="plants")),
-    # path("api/v1/devices/", include("apps.devices.api.urls", namespace="devices")),
-    # path("api/v1/alerts/", include("apps.alerts.api.urls", namespace="alerts")),
-    # path("api/v1/automation/", include("apps.automation.api.urls", namespace="automation")),
-    # path("api/v1/firmware/", include("apps.firmware.api.urls", namespace="firmware")),
-    # path("api/v1/tasks/", include("apps.tasks.api.urls", namespace="tasks")),
-    # path("api/v1/notifications/", include("apps.notifications.api.urls", namespace="notifications")),
-    # path("api/v1/billing/", include("apps.billing.api.urls", namespace="billing")),
+    path("api/v1/care-engine/", include("apps.care_engine.api.urls", namespace="care_engine")),
+    path("api/v1/integrations/", include("apps.integrations.api.urls", namespace="integrations")),
+    path("api/v1/provider-ops/", include("apps.provider_ops.api.urls", namespace="provider_ops")),
+    path("api/v1/marketplace/", include("apps.marketplace.api.urls", namespace="marketplace")),
+    path("api/v1/notifications/", include("apps.notifications.api.urls", namespace="notifications")),
+    path("api/v1/billing/", include("apps.billing.api.urls", namespace="billing")),
+    path("api/v1/audit/", include("apps.audit.api.urls", namespace="audit")),
 ]
 
 # ---------------------------------------------------------------------------

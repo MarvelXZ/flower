@@ -2,8 +2,10 @@
 
 import os
 
-# Ensure SECRET_KEY is set before base settings import
+# Ensure a key is set before base settings import.
 os.environ.setdefault("SECRET_KEY", "test-secret-key-not-for-production")
+os.environ.setdefault("DJANGO_SECRET_KEY", "test-secret-key-not-for-production")
+os.environ.setdefault("DJANGO_DEBUG", "False")
 
 from config.settings.base import *  # noqa: F403
 
@@ -19,11 +21,14 @@ ALLOWED_HOSTS = ["localhost", "testserver"]
 DATABASES = {
     "default": {
         "ENGINE": "django_tenants.postgresql_backend",
-        "NAME": env.str("POSTGRES_DB", default="plantops") + "_test",  # noqa: F405
-        "USER": env.str("POSTGRES_USER", default="plantops"),  # noqa: F405
-        "PASSWORD": env.str("POSTGRES_PASSWORD", default="plantops"),  # noqa: F405
+        "NAME": env.str("POSTGRES_DB", default="flower") + "_test",  # noqa: F405
+        "USER": env.str("POSTGRES_USER", default="flower"),  # noqa: F405
+        "PASSWORD": env.str("POSTGRES_PASSWORD", default="flower"),  # noqa: F405
         "HOST": env.str("POSTGRES_HOST", default="localhost"),  # noqa: F405
         "PORT": env.str("POSTGRES_PORT", default="5432"),  # noqa: F405
+        "OPTIONS": {
+            "connect_timeout": env.int("POSTGRES_CONNECT_TIMEOUT", default=2),  # noqa: F405
+        },
     }
 }
 

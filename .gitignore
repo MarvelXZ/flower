@@ -154,4 +154,5 @@ infra/nginx/*.conf.user
 
 # Local overrides
 docker-compose.override.yml
+!docker-compose.override.yml
 !docker-compose.override.yml.example

@@ -1,0 +1,63 @@
+name: flower_provider
+description: Flower provider operations mobile application.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.5.0
+  riverpod_annotation: ^2.3.0
+
+  # Routing
+  go_router: ^14.0.0
+
+  # Networking
+  dio: ^5.4.0
+
+  # Local database
+  drift: ^2.16.0
+  sqlite3_flutter_libs: ^0.5.0
+  path_provider: ^2.1.0
+  path: ^1.9.0
+
+  # Auth / Secure storage
+  flutter_secure_storage: ^9.0.0
+
+  # Code generation
+  freezed_annotation: ^2.4.0
+  json_annotation: ^4.8.0
+
+  # WebSocket
+  web_socket_channel: ^2.4.0
+
+  # Firebase / Push (placeholder)
+  firebase_core: ^2.27.0
+  firebase_messaging: ^14.7.0
+
+  # UI
+  intl: ^0.19.0
+  flutter_slidable: ^3.0.0
+
+  # Connectivity
+  connectivity_plus: ^6.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.0
+  freezed: ^2.4.0
+  json_serializable: ^6.7.0
+  drift_dev: ^2.16.0
+  riverpod_generator: ^2.4.0
+  mockito: ^5.4.0
+  mocktail: ^1.0.0
+
+flutter:
+  uses-material-design: true

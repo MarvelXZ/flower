@@ -1,0 +1,1 @@
+DEFAULT_ALERT_STATUS = "open"

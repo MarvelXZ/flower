@@ -16,13 +16,10 @@ CORS_ALLOWED_ORIGINS = [
 # ---------------------------------------------------------------------------
 # Development tooling
 # ---------------------------------------------------------------------------
-INSTALLED_APPS += [  # noqa: F405
-    "debug_toolbar",
-]
+if "debug_toolbar" not in INSTALLED_APPS:  # noqa: F405
+    INSTALLED_APPS += ["debug_toolbar"]  # noqa: F405
 
-MIDDLEWARE += [  # noqa: F405
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-]
+MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]  # noqa: F405
 
 INTERNAL_IPS = ["127.0.0.1"]
 

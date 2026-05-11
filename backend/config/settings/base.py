@@ -1,123 +1,94 @@
-"""
-PlantOps SaaS — Base Django Settings
+"""Base Django settings for the Flower backend.
 
-This module contains all shared settings. Environment-specific overrides live in
-local.py, production.py, and test.py.
-
-Architecture notes:
-- Multi-tenancy via django-tenants (PostgreSQL schemas).
-- DDD-friendly app layout: each app is a bounded context.
-- All secrets loaded from environment variables.
-- Fail-closed tenant isolation by default.
+The project uses django-tenants with a modular-monolith layout. Public schema
+apps are kept separate from tenant schema apps so tenant isolation remains
+visible in configuration, not just in application code.
 """
 
+import os
 from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
 from environs import Env
 
-# ---------------------------------------------------------------------------
-# Environment
-# ---------------------------------------------------------------------------
 env = Env()
 
-# ---------------------------------------------------------------------------
-# Paths
-# ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 APPS_DIR = BASE_DIR / "apps"
 
-# ---------------------------------------------------------------------------
-# Security
-# ---------------------------------------------------------------------------
-SECRET_KEY = env.str("SECRET_KEY", default="")
+SECRET_KEY = env.str("DJANGO_SECRET_KEY", default=os.environ.get("SECRET_KEY", ""))
 if not SECRET_KEY:
-    raise ImproperlyConfigured(
-        "The SECRET_KEY environment variable must be set. "
-        "It should be a secure random string of at least 50 characters."
-    )
+    raise ImproperlyConfigured("DJANGO_SECRET_KEY or SECRET_KEY must be set.")
 
-DEBUG = env.bool("DEBUG", default=False)
+if "DJANGO_DEBUG" in os.environ:
+    DEBUG = env.bool("DJANGO_DEBUG")
+else:
+    DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[], subcast=str)
-CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[], subcast=str)
+if "DJANGO_ALLOWED_HOSTS" in os.environ:
+    ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+else:
+    ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
-# ---------------------------------------------------------------------------
-# Application Definition
-# ---------------------------------------------------------------------------
-# django-tenants splits apps into SHARED_APPS (public schema) and
-# TENANT_APPS (tenant schemas). Only apps listed here are migrated.
-
+# django-tenants migrates SHARED_APPS to public and TENANT_APPS to tenant schemas.
 SHARED_APPS = [
-    # django-tenants must come before django.contrib.contenttypes
     "django_tenants",
-    # Django core
+    "apps.tenancy",
+    "apps.marketplace",
     "django.contrib.contenttypes",
-    "django.contrib.auth",
-    "django.contrib.sessions",
-    "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.admin",
-    # Third-party shared
     "rest_framework",
+    "django_filters",
     "drf_spectacular",
     "corsheaders",
     "django_htmx",
     "modeltranslation",
-    "django_celery_beat",
-    # PlantOps shared apps
     "apps.core",
-    "apps.tenants",
 ]
 
 TENANT_APPS = [
-    # Django core (required in tenant schemas)
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.admin",
-    # Third-party tenant
     "rest_framework",
+    "django_filters",
     "drf_spectacular",
     "django_htmx",
     "modeltranslation",
     "django_celery_beat",
-    # PlantOps bounded contexts
-    "apps.users",
+    "apps.identity",
     "apps.locations",
-    "apps.planters",
     "apps.plants",
+    "apps.pots",
     "apps.devices",
     "apps.telemetry",
-    "apps.alerts",
-    "apps.automation",
-    "apps.firmware",
-    "apps.tasks",
+    "apps.care_engine",
+    "apps.integrations",
+    "apps.provider_ops",
     "apps.notifications",
     "apps.billing",
     "apps.audit",
 ]
 
-INSTALLED_APPS = list(SHARED_APPS) + [
-    app for app in TENANT_APPS if app not in SHARED_APPS
-]
+GIS_ENABLED = env.bool("DJANGO_GIS_ENABLED", default=False)
+if GIS_ENABLED:
+    TENANT_APPS.insert(5, "django.contrib.gis")
 
-# ---------------------------------------------------------------------------
-# Tenant Configuration
-# ---------------------------------------------------------------------------
-TENANT_MODEL = "tenants.Client"
-TENANT_DOMAIN_MODEL = "tenants.Domain"
+INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
+TENANT_MODEL = "tenancy.Client"
+TENANT_DOMAIN_MODEL = "tenancy.Domain"
+PUBLIC_SCHEMA_NAME = "public"
 DATABASE_ROUTERS = ("django_tenants.routers.TenantSyncRouter",)
 
-# ---------------------------------------------------------------------------
-# Middleware
-# ---------------------------------------------------------------------------
 MIDDLEWARE = [
     "django_tenants.middleware.main.TenantMainMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "apps.core.middleware.request_context.RequestContextMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -128,14 +99,10 @@ MIDDLEWARE = [
     "django_htmx.middleware.HtmxMiddleware",
 ]
 
-# ---------------------------------------------------------------------------
-# URL Configuration
-# ---------------------------------------------------------------------------
 ROOT_URLCONF = "config.urls"
+WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
 
-# ---------------------------------------------------------------------------
-# Template Configuration
-# ---------------------------------------------------------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -153,99 +120,60 @@ TEMPLATES = [
     },
 ]
 
-# ---------------------------------------------------------------------------
-# WSGI / ASGI
-# ---------------------------------------------------------------------------
-WSGI_APPLICATION = "config.wsgi.application"
-ASGI_APPLICATION = "config.asgi.application"
-
-# ---------------------------------------------------------------------------
-# Database
-# ---------------------------------------------------------------------------
 DATABASES = {
     "default": {
         "ENGINE": "django_tenants.postgresql_backend",
-        "NAME": env.str("POSTGRES_DB", default="plantops"),
-        "USER": env.str("POSTGRES_USER", default="plantops"),
-        "PASSWORD": env.str("POSTGRES_PASSWORD", default="plantops"),
+        "NAME": env.str("POSTGRES_DB", default="flower"),
+        "USER": env.str("POSTGRES_USER", default="flower"),
+        "PASSWORD": env.str("POSTGRES_PASSWORD", default="flower"),
         "HOST": env.str("POSTGRES_HOST", default="localhost"),
         "PORT": env.str("POSTGRES_PORT", default="5432"),
+        "OPTIONS": {
+            "connect_timeout": env.int("POSTGRES_CONNECT_TIMEOUT", default=5),
+        },
     }
 }
 
-# ---------------------------------------------------------------------------
-# Authentication
-# ---------------------------------------------------------------------------
-AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "identity.User"
 
-# ---------------------------------------------------------------------------
-# Password Validation
-# ---------------------------------------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ---------------------------------------------------------------------------
-# Internationalization
-# ---------------------------------------------------------------------------
 LANGUAGE_CODE = "sr"
 TIME_ZONE = "Europe/Belgrade"
 USE_I18N = True
 USE_TZ = True
 
 LANGUAGES = [
-    ("sr", "Srpski"),
+    ("sr", "Serbian"),
     ("en", "English"),
-    ("hr", "Hrvatski"),
-    ("sl", "Slovenščina"),
-    ("mk", "Македонски"),
-    ("sq", "Shqip"),
-    ("el", "Ελληνικά"),
-    ("de", "Deutsch"),
+    ("hr", "Croatian"),
+    ("sl", "Slovenian"),
+    ("mk", "Macedonian"),
+    ("sq", "Albanian"),
+    ("el", "Greek"),
+    ("de", "German"),
 ]
 
-LOCALE_PATHS = [
-    BASE_DIR / "locale",
-]
+LOCALE_PATHS = [BASE_DIR / "locale"]
 
-# ---------------------------------------------------------------------------
-# Model Translation
-# ---------------------------------------------------------------------------
 MODELTRANSLATION_DEFAULT_LANGUAGE = "sr"
 MODELTRANSLATION_LANGUAGES = ("sr", "en", "hr", "sl", "mk", "sq", "el", "de")
 MODELTRANSLATION_FALLBACK_LANGUAGES = {"default": ("sr", "en")}
 
-# ---------------------------------------------------------------------------
-# Static & Media Files
-# ---------------------------------------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# ---------------------------------------------------------------------------
-# Default Primary Key Field Type
-# ---------------------------------------------------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ---------------------------------------------------------------------------
-# Django REST Framework
-# ---------------------------------------------------------------------------
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -254,38 +182,28 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
-    "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
-    ],
-    "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
-    ],
 }
 
-# ---------------------------------------------------------------------------
-# drf-spectacular (OpenAPI schema)
-# ---------------------------------------------------------------------------
 SPECTACULAR_SETTINGS = {
-    "TITLE": "PlantOps API",
-    "DESCRIPTION": "Multi-tenant SaaS API for IoT plant and planter management.",
+    "TITLE": "Flower API",
+    "DESCRIPTION": "Multi-tenant SaaS API for plant care, IoT monitoring, provider operations, and marketplace workflows.",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
-    "COMPONENT_SPLIT_REQUEST": True,
     "SCHEMA_PATH_PREFIX": r"/api/",
 }
 
-# ---------------------------------------------------------------------------
-# CORS
-# ---------------------------------------------------------------------------
-CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[], subcast=str)
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
 CORS_ALLOW_CREDENTIALS = True
 
-# ---------------------------------------------------------------------------
-# Celery
-# ---------------------------------------------------------------------------
-CELERY_BROKER_URL = env.str("CELERY_BROKER_URL", default="amqp://guest:guest@localhost:5672//")
+REDIS_URL = env.str("REDIS_URL", default="redis://localhost:6379/0")
+CELERY_BROKER_URL = env.str("CELERY_BROKER_URL", default=REDIS_URL)
 CELERY_RESULT_BACKEND = env.str("CELERY_RESULT_BACKEND", default="redis://localhost:6379/1")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
@@ -293,58 +211,36 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ENABLE_UTC = True
 
-# ---------------------------------------------------------------------------
-# Email
-# ---------------------------------------------------------------------------
-EMAIL_BACKEND = env.str("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
-DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="noreply@plantops.local")
+MQTT_HOST = env.str("MQTT_HOST", default="localhost")
+MQTT_PORT = env.int("MQTT_PORT", default=1883)
+B2B_TEST_API_KEY = env.str("B2B_TEST_API_KEY", default="test-provider-api-key")
+B2B_HTTP_TIMEOUT_SECONDS = env.float("B2B_HTTP_TIMEOUT_SECONDS", default=5.0)
+B2B_HMAC_MAX_SKEW_SECONDS = env.int("B2B_HMAC_MAX_SKEW_SECONDS", default=300)
+B2B_TEST_KEY_ID = env.str("B2B_TEST_KEY_ID", default="test-key-id")
+B2B_TEST_SECRET_REFERENCE = env.str(
+    "B2B_TEST_SECRET_REFERENCE",
+    default="settings://b2b/test-shared-secret",
+)
+B2B_TEST_SHARED_SECRET = env.str("B2B_TEST_SHARED_SECRET", default="test-shared-secret")
+B2B_TEST_SECRETS = {B2B_TEST_SECRET_REFERENCE: B2B_TEST_SHARED_SECRET}
+B2B_TEST_KEY_STATUS = env.str("B2B_TEST_KEY_STATUS", default="active")
+B2B_TEST_KEY_VALID_FROM = env.str("B2B_TEST_KEY_VALID_FROM", default="")
+B2B_TEST_KEY_VALID_UNTIL = env.str("B2B_TEST_KEY_VALID_UNTIL", default="")
 
-# ---------------------------------------------------------------------------
-# Logging
-# ---------------------------------------------------------------------------
+EMAIL_BACKEND = env.str("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="noreply@flower.local")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "{levelname} {asctime} {module} {message}",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-    },
     "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        },
+        "console": {"class": "logging.StreamHandler"},
     },
     "root": {
         "handlers": ["console"],
         "level": "INFO",
     },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
-        "apps": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False,
-        },
-    },
 }
 
-# ---------------------------------------------------------------------------
-# Security Defaults
-# ---------------------------------------------------------------------------
-SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
-
-# These are intentionally left for environment-specific settings:
-# SECURE_SSL_REDIRECT, SECURE_HSTS_SECONDS, SESSION_COOKIE_SECURE, etc.

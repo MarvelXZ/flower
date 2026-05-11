@@ -1,0 +1,58 @@
+# Engineering Rules
+
+- No cross-tenant database access from application code.
+- API views do not perform direct write operations on models.
+- Provider tenants never read owner schemas directly.
+- Integration secrets are not stored in the public schema unless explicitly justified.
+- Owner tenant data is canonical for owned assets and telemetry.
+- Provider copies are synchronized only through B2B APIs and outbox pipelines.
+- MQTT ingest writes owner `SensorReading` before optional provider forwarding.
+- Outbox state transitions must go through `apps.integrations.services.outbox_service`.
+- Outbox workers must claim work with `select_for_update(skip_locked=True)` before processing.
+- Outbox pipeline code must use replaceable transports; HTTP and mock transports share `send(request)`.
+- All outbound provider HTTP requests must have a timeout.
+- B2B API keys, shared secrets, authorization headers, and sensitive payloads must not be logged.
+- Provider HMAC signing must use `ProviderKey` plus a secret resolver, not connection-level plain secret fields.
+- Provider keys must be created, rotated, and revoked through `provider_key_service`.
+- Plain B2B shared secrets must not be stored in public schema or tenant models.
+- Owner outbound B2B mappings must derive from owner outbox events and never from provider schema reads.
+- Provider connections live in owner tenant schemas and revoked connections must not be used.
+- Provider inbound B2B API runs in provider tenant context and writes only through `provider_ops` services.
+- Provider inbound endpoints require either local test API key auth or HMAC auth; mutating endpoints require `X-Idempotency-Key`.
+- Provider inbound HMAC auth must look up keys through the `ProviderInboundKey` registry (provider tenant schema), not owner-side models.
+- Provider inbound HMAC auth must validate endpoint scopes from the inbound key's `scopes` field.
+- Provider inbound endpoints must not trust `source_owner_tenant_id` from the payload when HMAC auth is used; must cross-check against the key's binding.
+- Inbound keys must be registered and revoked through `inbound_key_service`.
+- Engagement lifecycle transitions must go through `engagement_service`.
+- `assert_engagement_allows_sync()` must be called before any sync operation; only `active` engagements may sync.
+- Sync run status transitions must go through `sync_service`; `completed`, `failed`, and `cancelled` are terminal.
+- Checkpoint updates must be idempotent and must not go backwards in time.
+- Sync engine must use `sync_engine_service` public entry points; no direct `SyncRun`/`SyncItem` writes outside the service layer.
+- Delivery during sync must reuse `deliver_outbox_event` — HTTP transport, HMAC signing, and retry must not be duplicated.
+- Sync orchestration must use `acquire_sync_lock()` before starting a sync run; at most one running sync per engagement.
+- Stuck sync runs (running > 30 min) must be recovered via `recover_stuck_sync_runs()`.
+- Sync health monitoring must be available through `sync_health_service`; unhealthy engagements must be detectable.
+- Sync audit events must be best-effort and must not break the primary flow.
+- Rule evaluation runs inside the sensor reading transaction (fail-closed for MVP).
+- Alert mutations must go through `alert_service` — no direct `Alert` writes from views or tasks.
+- ``alert_key`` uniqueness is enforced in the service layer for open/acknowledged alerts; resolved/dismissed alerts are terminal.
+- Notification outbox mutations must go through `notification_outbox_service` — no direct `NotificationOutbox` writes.
+- Alert service enqueues notifications but never sends directly; delivery is always async.
+- Notification delivery uses real transports (FCM for push, SMTP for email) resolved by channel.
+- Push tokens are deactivated (not deleted) on invalid FCM response; tokens are never logged.
+- Notification preference enforcement uses opt-out model: no preference = allowed.
+- Preference enforcement happens at enqueue time; disabled preferences prevent NotificationOutbox creation.
+- Provider tasks must be created through `task_service`; no direct `ProviderTask` writes from views.
+- Task lifecycle transitions must go through `task_service`; `completed` and `cancelled` are terminal.
+- Task status transitions create audit events via `ProviderTaskEvent`.
+- Alert-to-task mapping must use `alert_task_mapper` for rule_code → task_type conversion.
+- Provider tasks reference owner data through `external_*_id` strings only — no FKs to owner schema.
+- Dashboard API uses compact mobile serializers for low-bandwidth responses; no heavy nested objects.
+- All provider dashboard list endpoints support pagination (limit/offset), filtering, and ordering.
+- API versioning is via URL path (`/api/provider/v1/`, `/api/b2b/v1/`).
+- Realtime updates use a no-op placeholder service; real WebSocket/SSE is not yet implemented.
+- Marketplace listing lifecycle transitions must be validated before mutation.
+- Billing operations must go through the `BillingProvider` abstraction — no direct Stripe SDK calls from business logic.
+- Only active engagements may allow data synchronisation; revoked engagements are terminal.
+- Reused idempotency keys with different request hashes must return conflict.
+- Static UI text uses `gettext_lazy`; dynamic translated models remain compatible with django-modeltranslation.

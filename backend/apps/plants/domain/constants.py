@@ -1,0 +1,1 @@
+DEFAULT_PLANT_STATUS = "active"

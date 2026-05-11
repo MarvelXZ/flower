@@ -1,9 +1,4 @@
-"""
-Celery configuration for PlantOps.
-
-Broker: RabbitMQ
-Result Backend: Redis
-"""
+"""Celery configuration for Flower."""
 
 import os
 
@@ -11,7 +6,7 @@ from celery import Celery
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 
-app = Celery("plantops", task_cls="apps.core.celery.TenantTask")
+app = Celery("flower", task_cls="apps.core.celery.TenantTask")
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

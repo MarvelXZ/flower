@@ -32,22 +32,21 @@ These apps live in the `public` schema:
 - `django_tenants`
 - `django.contrib.*` (core)
 - `rest_framework`, `drf_spectacular`
-- `apps.tenants`
+- `apps.tenancy`
 
 ### TENANT_APPS
 These apps are replicated in every tenant schema:
-- All bounded contexts (`accounts`, `locations`, `planters`, `plants`, `devices`, `measurements`, `alerts`, `tasks`, `notifications`, `billing`, `audit`)
+- All bounded contexts (`identity`, `locations`, `plants`, `pots`, `devices`, `telemetry`, `care_engine`, `integrations`, `provider_ops`, `notifications`, `billing`, `audit`)
 
 ## Creating a Tenant
 
 ```python
-from apps.tenants.services import create_tenant
+from apps.tenancy.services import create_tenant
 
 tenant = create_tenant(
     name="Acme Corp",
     slug="acme",
-    schema_name="acme",
-    domain="acme.plantops.local",
+    kind=TenantKind.OWNER,
 )
 ```
 
@@ -66,7 +65,7 @@ Celery tasks that touch tenant data must explicitly enter the tenant context:
 
 ```python
 from django_tenants.utils import tenant_context
-from apps.tenants.models import Client
+from apps.tenancy.models import Client
 
 tenant = Client.objects.get(schema_name="acme")
 with tenant_context(tenant):

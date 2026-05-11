@@ -21,11 +21,6 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CONN_MAX_AGE = 60
 
 # ---------------------------------------------------------------------------
-# Static files (whitenoise or CDN in production)
-# ---------------------------------------------------------------------------
-MIDDLEWARE.insert(1, "django.middleware.security.SecurityMiddleware")  # noqa: F405
-
-# ---------------------------------------------------------------------------
 # Sentry (optional)
 # ---------------------------------------------------------------------------
 SENTRY_DSN = env.str("SENTRY_DSN", default="")  # noqa: F405

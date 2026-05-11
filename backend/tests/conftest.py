@@ -1,22 +1,21 @@
-"""
-Pytest fixtures and configuration.
-"""
+"""Pytest fixtures for Flower."""
 
 import pytest
 from django_tenants.utils import tenant_context
 
-from apps.tenants.models import Client, Domain
-from apps.users.models import User
+from apps.identity.models import User
+from apps.tenancy.domain.enums import TenantKind
+from apps.tenancy.models import Client, Domain
 
 
 @pytest.fixture
 def public_tenant(db):
-    """Create a public schema tenant for shared-app tests."""
     tenant, _ = Client.objects.get_or_create(
         schema_name="public",
         defaults={
             "name": "Public",
             "slug": "public",
+            "kind": TenantKind.MARKETPLACE_ADMIN,
         },
     )
     Domain.objects.get_or_create(
@@ -28,46 +27,27 @@ def public_tenant(db):
 
 
 @pytest.fixture
-def demo_tenant(db):
-    """Create a demo tenant with its own schema."""
+def owner_tenant(db):
     tenant = Client.objects.create(
-        name="Demo Tenant",
-        slug="demo",
-        schema_name="demo",
+        name="Demo Owner",
+        slug="demo-owner",
+        schema_name="demo_owner",
+        kind=TenantKind.OWNER,
     )
-    Domain.objects.create(
-        tenant=tenant,
-        domain="demo.localhost",
-        is_primary=True,
-    )
+    Domain.objects.create(tenant=tenant, domain="owner.localhost", is_primary=True)
     return tenant
 
 
 @pytest.fixture
-def use_tenant_context(demo_tenant):
-    """Fixture to run code inside a tenant context."""
-    with tenant_context(demo_tenant):
-        yield demo_tenant
+def use_owner_context(owner_tenant):
+    with tenant_context(owner_tenant):
+        yield owner_tenant
 
 
 @pytest.fixture
-def tenant_user(use_tenant_context):
-    """Create a regular user within the demo tenant context."""
+def tenant_user(use_owner_context):
     return User.objects.create_user(
-        username="testgardener",
-        email="gardener@demo.local",
+        username="owner-user",
+        email="owner@example.test",
         password="testpass123",
-        role="gardener",
-    )
-
-
-@pytest.fixture
-def admin_user(use_tenant_context):
-    """Create an admin user within the demo tenant context."""
-    return User.objects.create_user(
-        username="testadmin",
-        email="admin@demo.local",
-        password="testpass123",
-        role="admin",
-        is_staff=True,
     )

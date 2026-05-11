@@ -1,0 +1,2 @@
+OWNER_ROLE_PREFIX = "owner"
+PROVIDER_ROLE_PREFIX = "provider"
