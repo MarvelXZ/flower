@@ -7,3 +7,14 @@ class DeviceStatus(models.TextChoices):
     ACTIVE = "active", _("Active")
     OFFLINE = "offline", _("Offline")
     RETIRED = "retired", _("Retired")
+
+
+class ProvisioningStatus(models.TextChoices):
+    """Lifecycle stages for device onboarding."""
+
+    UNPROVISIONED = "unprovisioned", _("Unprovisioned")
+    IDENTITY_CREATED = "identity_created", _("Identity created")
+    CERTIFICATE_ISSUED = "certificate_issued", _("Certificate issued")
+    REGISTERED = "registered", _("Registered")
+    ACTIVATED = "activated", _("Activated")
+    FAILED = "failed", _("Failed")

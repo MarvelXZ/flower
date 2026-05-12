@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
 
+from apps.core.metrics import get_metrics_snapshot
 from apps.core.services.runtime_health_service import get_dependency_health, get_runtime_health
 
 
@@ -46,6 +47,35 @@ def core_health_summary(request):
     """Aggregate health summary."""
     data = get_runtime_health()
     return JsonResponse(data)
+
+
+def core_metrics_endpoint(request):
+    """Prometheus-compatible metrics export endpoint.
+
+    Exports in-memory counters, gauges, and histograms in the
+    Prometheus text exposition format."""
+    snapshot = get_metrics_snapshot()
+    lines = []
+
+    for name, value in snapshot["counters"].items():
+        lines.append(f"# TYPE {name} counter")
+        lines.append(f"{name} {value}")
+
+    for name, value in snapshot["gauges"].items():
+        lines.append(f"# TYPE {name} gauge")
+        lines.append(f"{name} {value:.6f}")
+
+    for name, stats in snapshot["histograms"].items():
+        lines.append(f"# TYPE {name} summary")
+        lines.append(f"{name}_count {stats['count']}")
+        lines.append(f"{name}_sum {stats['sum']:.6f}")
+
+    lines.append(f"# EOF")
+    return JsonResponse(
+        "\n".join(lines) + "\n",
+        safe=False,
+        content_type="text/plain; version=0.0.4",
+    )
 
 
 @require_POST

@@ -28,6 +28,8 @@ Flower is an enterprise multi-tenant SaaS platform for plant care, IoT monitorin
 - [Provider inbound key registry](architecture/PROVIDER_INBOUND_KEY_REGISTRY.md)
 - [Engagement lifecycle](architecture/ENGAGEMENT_LIFECYCLE.md)
 - [Owner outbound B2B](architecture/OWNER_OUTBOUND_B2B.md)
+- [Device Control Plane](architecture/DEVICE_CONTROL_PLANE.md)
+- [Device Event Bus](architecture/DEVICE_EVENT_BUS.md)
 - [Marketplace](architecture/MARKETPLACE.md)
 - [Mobile apps](architecture/MOBILE_APPS.md)
 - [Engineering rules](governance/RULES.md)

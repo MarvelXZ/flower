@@ -8,7 +8,7 @@ from uuid import UUID, uuid4
 
 import pytest
 
-from apps.devices.domain.enums import DeviceStatus
+from apps.devices.domain.enums import DeviceStatus, ProvisioningStatus
 from apps.devices.services import provisioning_service
 from apps.integrations.domain.enums import OutboxStatus
 from apps.telemetry.services import mqtt_ingest_service, sensor_reading_service
@@ -59,12 +59,13 @@ def test_device_registration_uses_service(monkeypatch):
     monkeypatch.setattr(provisioning_service, "connection", SimpleNamespace(schema_name="owner"))
     monkeypatch.setattr(provisioning_service.timezone, "now", lambda: now)
 
-    device = provisioning_service.register_device(name="ESP32 Office")
+    device = provisioning_service.register_device(name="ESP32 Office", serial_number="SN-001")
 
     assert device.name == "ESP32 Office"
     assert created["owner_tenant_schema"] == "owner"
     assert created["status"] == DeviceStatus.PROVISIONING
     assert created["provisioned_at"] == now
+    assert created["serial_number"] == "SN-001"
 
 
 def test_activate_and_deactivate_device_use_service():

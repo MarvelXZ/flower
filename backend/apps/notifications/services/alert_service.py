@@ -14,6 +14,7 @@ from apps.notifications.domain.enums import (
     NotificationType,
 )
 from apps.notifications.models import Alert
+from apps.notifications.models.alert_event import AlertEvent, record_alert_event
 from apps.notifications.services.notification_outbox_service import enqueue_alert_notification
 
 
@@ -30,8 +31,9 @@ class InvalidAlertTransition(AlertServiceError):
 # ---------------------------------------------------------------------------
 
 _ALERT_TRANSITIONS: dict[str, set[str]] = {
-    AlertStatus.OPEN: {AlertStatus.ACKNOWLEDGED, AlertStatus.RESOLVED, AlertStatus.DISMISSED},
-    AlertStatus.ACKNOWLEDGED: {AlertStatus.RESOLVED, AlertStatus.DISMISSED},
+    AlertStatus.OPEN: {AlertStatus.ACKNOWLEDGED, AlertStatus.RESOLVED, AlertStatus.DISMISSED, AlertStatus.SUPPRESSED},
+    AlertStatus.ACKNOWLEDGED: {AlertStatus.RESOLVED, AlertStatus.DISMISSED, AlertStatus.SUPPRESSED},
+    AlertStatus.SUPPRESSED: {AlertStatus.OPEN, AlertStatus.RESOLVED, AlertStatus.DISMISSED},
     AlertStatus.RESOLVED: set(),   # terminal
     AlertStatus.DISMISSED: set(),  # terminal
 }
@@ -108,6 +110,14 @@ def open_or_update_alert(
             metadata=metadata or {},
         )
 
+        record_alert_event(
+            alert=alert,
+            event_type=AlertEvent.EventType.CREATED,
+            to_status=AlertStatus.OPEN,
+            triggered_by="rule_engine",
+            metadata={"rule_code": rule_code, "alert_key": alert_key},
+        )
+
         # Enqueue alert created notification — async delivery via worker.
         enqueue_alert_notification(
             alert=alert,
@@ -128,6 +138,15 @@ def acknowledge_alert(*, alert: Alert) -> Alert:
         alert.status = AlertStatus.ACKNOWLEDGED
         alert.acknowledged_at = now
         alert.save(update_fields=["status", "acknowledged_at", "updated_at"])
+
+        record_alert_event(
+            alert=alert,
+            event_type=AlertEvent.EventType.ACKNOWLEDGED,
+            from_status=AlertStatus.OPEN,
+            to_status=AlertStatus.ACKNOWLEDGED,
+            triggered_by="user",
+        )
+
         return alert
 
 
@@ -144,6 +163,14 @@ def resolve_alert(*, alert: Alert) -> Alert:
         alert.status = AlertStatus.RESOLVED
         alert.resolved_at = now
         alert.save(update_fields=["status", "resolved_at", "updated_at"])
+
+        record_alert_event(
+            alert=alert,
+            event_type=AlertEvent.EventType.RESOLVED,
+            from_status=AlertStatus.OPEN,
+            to_status=AlertStatus.RESOLVED,
+            triggered_by="system",
+        )
 
         enqueue_alert_notification(
             alert=alert,
@@ -164,4 +191,40 @@ def dismiss_alert(*, alert: Alert) -> Alert:
         alert.status = AlertStatus.DISMISSED
         alert.dismissed_at = now
         alert.save(update_fields=["status", "dismissed_at", "updated_at"])
+
+        record_alert_event(
+            alert=alert,
+            event_type=AlertEvent.EventType.DISMISSED,
+            from_status=AlertStatus.OPEN,
+            to_status=AlertStatus.DISMISSED,
+            triggered_by="user",
+        )
+
+        return alert
+
+
+def suppress_alert(*, alert: Alert, reason: str = "") -> Alert:
+    """Suppress an alert without resolving it.
+
+    Suppressed alerts do NOT send notifications.  They can be
+    unsuppressed (→ OPEN), resolved, or dismissed later.
+    This is used for cooldown suppression and maintenance windows.
+    """
+    now = timezone.now()
+    with transaction.atomic():
+        _validate_transition(alert.status, AlertStatus.SUPPRESSED)
+        alert.status = AlertStatus.SUPPRESSED
+        if reason:
+            alert.metadata["suppress_reason"] = reason
+        alert.save(update_fields=["status", "metadata", "updated_at"])
+
+        record_alert_event(
+            alert=alert,
+            event_type=AlertEvent.EventType.SUPPRESSED,
+            from_status=AlertStatus.OPEN,
+            to_status=AlertStatus.SUPPRESSED,
+            triggered_by="cooldown" if not reason else "user",
+            metadata={"reason": reason},
+        )
+
         return alert

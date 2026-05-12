@@ -15,7 +15,7 @@ WORKDIR /app
 ENV UV_COMPILE_BYTECODE=1
 
 # Install dependencies first (for layer caching)
-COPY backend/pyproject.toml ./
+COPY backend/pyproject.toml backend/README.md ./
 RUN uv pip install --system --no-cache -e .
 
 # ---------------------------------------------------------------------------

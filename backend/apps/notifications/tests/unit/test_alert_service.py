@@ -146,6 +146,10 @@ def test_open_or_update_alert_creates_new(monkeypatch):
         "apps.notifications.services.alert_service.enqueue_alert_notification",
         lambda **kw: None,
     )
+    monkeypatch.setattr(
+        "apps.notifications.services.alert_service.record_alert_event",
+        lambda **kw: None,
+    )
 
     class FakeAlert:
         objects = SimpleNamespace(
@@ -220,6 +224,10 @@ def test_open_or_update_alert_same_key_no_duplicate(monkeypatch):
 
 def test_acknowledge_alert_changes_status(monkeypatch):
     _mock_atomic(monkeypatch)
+    monkeypatch.setattr(
+        "apps.notifications.services.alert_service.record_alert_event",
+        lambda **kw: None,
+    )
     now = timezone.now()
     monkeypatch.setattr(
         "apps.notifications.services.alert_service.timezone",
@@ -249,6 +257,10 @@ def test_acknowledge_resolved_alert_raises(monkeypatch):
 
 def test_resolve_alert_changes_status(monkeypatch):
     _mock_atomic(monkeypatch)
+    monkeypatch.setattr(
+        "apps.notifications.services.alert_service.record_alert_event",
+        lambda **kw: None,
+    )
     now = timezone.now()
     monkeypatch.setattr(
         "apps.notifications.services.alert_service.timezone",
@@ -282,6 +294,10 @@ def test_resolve_dismissed_alert_raises(monkeypatch):
 
 def test_dismiss_alert_changes_status(monkeypatch):
     _mock_atomic(monkeypatch)
+    monkeypatch.setattr(
+        "apps.notifications.services.alert_service.record_alert_event",
+        lambda **kw: None,
+    )
     now = timezone.now()
     monkeypatch.setattr(
         "apps.notifications.services.alert_service.timezone",

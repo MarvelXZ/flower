@@ -15,6 +15,7 @@ from apps.core.views import (
     core_health_live,
     core_health_ready,
     core_health_summary,
+    core_metrics_endpoint,
     ui_kit_sample,
 )
 
@@ -25,6 +26,7 @@ urlpatterns = [
     path("health/", core_health_summary, name="health"),
     path("health/live/", core_health_live, name="health-live"),
     path("health/ready/", core_health_ready, name="health-ready"),
+    path("metrics/", core_metrics_endpoint, name="metrics"),
 
     # -----------------------------------------------------------------------
     # Admin
@@ -66,7 +68,10 @@ urlpatterns = [
 # ---------------------------------------------------------------------------
 if settings.DEBUG:
     from django.conf.urls.static import static
-    from debug_toolbar.toolbar import debug_toolbar_urls
+    try:
+        from debug_toolbar.toolbar import debug_toolbar_urls
+        urlpatterns += debug_toolbar_urls()
+    except ImportError:
+        pass
 
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += debug_toolbar_urls()

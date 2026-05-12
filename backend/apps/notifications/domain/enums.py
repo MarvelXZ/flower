@@ -13,6 +13,7 @@ class AlertStatus(models.TextChoices):
     ACKNOWLEDGED = "acknowledged", _("Acknowledged")
     RESOLVED = "resolved", _("Resolved")
     DISMISSED = "dismissed", _("Dismissed")
+    SUPPRESSED = "suppressed", _("Suppressed")
 
 
 class AlertSourceType(models.TextChoices):
