@@ -53,7 +53,7 @@ class AuditableModel(UUIDModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="+%(class)s_created",
+        related_name="+",
         verbose_name=_("created by"),
     )
     updated_by = models.ForeignKey(
@@ -61,7 +61,7 @@ class AuditableModel(UUIDModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="+%(class)s_updated",
+        related_name="+",
         verbose_name=_("updated by"),
     )
 

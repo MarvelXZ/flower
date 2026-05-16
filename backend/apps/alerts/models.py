@@ -32,10 +32,8 @@ class AlertRule(AuditableModel):
         max_length=100,
         verbose_name=_("rule name"),
     )
-    sensor_type = models.ForeignKey(
-        "telemetry.SensorType",
-        on_delete=models.CASCADE,
-        related_name="alert_rules",
+    sensor_type = models.CharField(
+        max_length=64,
         verbose_name=_("sensor type"),
     )
     condition = models.CharField(
@@ -77,7 +75,7 @@ class AlertRule(AuditableModel):
         ]
 
     def __str__(self) -> str:
-        return f"{self.name} ({self.sensor_type.key} {self.condition} {self.threshold})"
+        return f"{self.name} ({self.sensor_type} {self.condition} {self.threshold})"
 
 
 class Alert(UUIDModel):
@@ -104,7 +102,7 @@ class Alert(UUIDModel):
     device = models.ForeignKey(
         "devices.Device",
         on_delete=models.CASCADE,
-        related_name="alerts",
+        related_name="rule_alerts",
         verbose_name=_("device"),
     )
     severity = models.CharField(

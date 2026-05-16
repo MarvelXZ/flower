@@ -91,6 +91,16 @@ class Alert(models.Model):
     dismissed_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_("dismissed at"),
     )
+    trigger_count = models.PositiveIntegerField(
+        default=1,
+        verbose_name=_("trigger count"),
+        help_text=_("How many times this alert has been triggered (re-opened after cooldown)."),
+    )
+    first_triggered_at = models.DateTimeField(
+        null=True, blank=True,
+        verbose_name=_("first triggered at"),
+        help_text=_("When the alert was first created. Re-opens do NOT change this."),
+    )
     metadata = models.JSONField(default=dict, blank=True, verbose_name=_("metadata"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("created at"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("updated at"))

@@ -1,24 +1,4 @@
 services:
-  postgres:
-    image: postgis/postgis:16-3.4-alpine
-    container_name: flower_postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-flower}
-      POSTGRES_USER: ${POSTGRES_USER:-flower}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-flower}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-flower} -d ${POSTGRES_DB:-flower}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - flower
-
   redis:
     image: redis:7-alpine
     container_name: flower_redis
@@ -60,7 +40,7 @@ services:
       - .env
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.local
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: ${POSTGRES_HOST:-192.168.1.152}
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/1
@@ -73,8 +53,6 @@ services:
     ports:
       - "8000"
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
       mqtt:
@@ -82,7 +60,8 @@ services:
     networks:
       - flower
     command: >
-      sh -c "python manage.py migrate_schemas --shared &&
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate_schemas --shared &&
              python manage.py runserver 0.0.0.0:8000"
 
   celery_worker:
@@ -96,7 +75,7 @@ services:
       - .env
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.local
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: ${POSTGRES_HOST:-192.168.1.152}
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/1
@@ -104,8 +83,6 @@ services:
     volumes:
       - ./backend:/app:cached
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
     networks:
@@ -128,7 +105,6 @@ services:
       - flower
 
 volumes:
-  postgres_data:
   redis_data:
   mqtt_data:
   mqtt_log:

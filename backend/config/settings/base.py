@@ -65,6 +65,7 @@ TENANT_APPS = [
     "apps.pots",
     "apps.devices",
     "apps.telemetry",
+    "apps.alerts",
     "apps.care_engine",
     "apps.integrations",
     "apps.provider_ops",

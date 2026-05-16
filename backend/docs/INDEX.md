@@ -12,6 +12,8 @@ Welcome to the PlantOps documentation. This is the starting point for understand
 | Frontend Boundaries | [architecture/FRONTEND_BOUNDARIES.md](architecture/FRONTEND_BOUNDARIES.md) |
 | Governance Rules | [governance/RULES.md](governance/RULES.md) |
 | Audit Checklist | [governance/AUDIT_CHECKLIST.md](governance/AUDIT_CHECKLIST.md) |
+| Rule & Alert Engine | [architecture/RULE_ALERT_ENGINE.md](architecture/RULE_ALERT_ENGINE.md) |
+| Sync Checkpoints | [architecture/SYNC_CHECKPOINTS.md](architecture/SYNC_CHECKPOINTS.md) |
 
 ## Project Structure
 

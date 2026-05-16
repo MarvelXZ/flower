@@ -60,7 +60,27 @@ These rules are non-negotiable. Violations must be caught in code review.
 - Translatable fields MUST be defined in `translation.py` per app.
 - Default language is Serbian (`sr`).
 
-## 10. Security
+## 10. Rule Operators Are Centrally Defined
+
+- All comparison operators MUST be defined in `RuleOperator` (`care_engine/models/rule.py`).
+- No ad-hoc operator strings in services or views.
+- New operators MUST be added to both `RuleOperator.choices` and `_OPERATOR_FUNCTIONS`.
+- Operator evaluation MUST go through `evaluate_operator()`.
+
+## 11. Alert Lifecycle Is Immutable
+
+- Alert status MUST NEVER be mutated directly outside `notifications.services.alert_service`.
+- `RESOLVED` and `DISMISSED` are terminal — no outgoing transitions.
+- `SUPPRESSED` alerts MUST NOT generate notifications.
+- Duplicate OPEN alerts for the same `rule + device` MUST be prevented.
+
+## 12. Alert Events Are Append-Only
+
+- `AlertEvent` records MUST NEVER be updated or deleted.
+- No `updated_at` field on `AlertEvent` — only `created_at`.
+- Each status transition MUST record a corresponding `AlertEvent`.
+
+## 13. Security
 
 - No secrets in code.
 - All configuration MUST come from environment variables.

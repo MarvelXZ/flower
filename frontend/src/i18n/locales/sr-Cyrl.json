@@ -1,0 +1,98 @@
+{
+  "app": {
+    "title": "PlantOps контролна табла",
+    "description": "IoT платформа за управљање биљкама и жардињерама."
+  },
+  "language": {
+    "aria": "Избор језика",
+    "srLatn": "SR latinica",
+    "srCyrl": "СР ћирилица",
+    "en": "EN"
+  },
+  "nav": {
+    "primary": "Главна навигација",
+    "overview": "Преглед",
+    "actions": "Акције",
+    "forms": "Форме",
+    "tables": "Табеле",
+    "menu": "Мени"
+  },
+  "hero": {
+    "eyebrow": "React UI пакет",
+    "title": "PlantOps компоненте",
+    "subtitle": "React екрани користе исте продукционе класе као Django шаблони и HTMX фрагменти.",
+    "preview": "Преглед",
+    "newTask": "Нови задатак"
+  },
+  "kpi": {
+    "activePlanters": "Активне жардињере",
+    "activePlantersMeta": "+12 ове недеље",
+    "moistureAverage": "Просек влажности",
+    "stable": "Стабилно",
+    "openAlerts": "Отворена упозорења",
+    "needsReview": "За проверу",
+    "automationUptime": "Доступност аутоматизације",
+    "healthy": "Здраво"
+  },
+  "controls": {
+    "title": "Контроле",
+    "help": "Дугмад, сегментиране контроле, ознаке и статус чипови.",
+    "timeRange": "Временски опсег",
+    "save": "Сачувај",
+    "preview": "Преглед",
+    "cancel": "Откажи",
+    "disable": "Онемогући",
+    "refresh": "Освежи",
+    "tenantReady": "Tenant спреман",
+    "online": "На мрежи",
+    "delayed": "Касни",
+    "offline": "Ван мреже"
+  },
+  "forms": {
+    "title": "Форме",
+    "reactReady": "Спремно за React",
+    "planterName": "Назив жардињере",
+    "planterNameValue": "Ред А у стакленику",
+    "irrigationProfile": "Профил наводњавања",
+    "balanced": "Уравнотежен",
+    "dryClimate": "Сува клима",
+    "propagation": "Размножавање",
+    "operatorNote": "Напомена оператера",
+    "operatorNoteValue": "Проверити сензоре после вечерњег наводњавања.",
+    "notifyTeam": "Обавести тим када се прагови прекораче",
+    "reset": "Поништи",
+    "saveProfile": "Сачувај профил"
+  },
+  "table": {
+    "title": "Оперативна табела",
+    "help": "Поновљиви приказ табела за токове уређаја и тенанта.",
+    "search": "Претражи жардињере",
+    "planter": "Жардињера",
+    "zone": "Зона",
+    "moisture": "Влажност",
+    "status": "Статус",
+    "lastReading": "Последње очитавање",
+    "open": "Отвори",
+    "meterAria": "{{value}} процената"
+  },
+  "planters": {
+    "basil": {
+      "name": "Линија босиљка 03",
+      "zone": "Стакленик А",
+      "status": "Здраво",
+      "last": "пре 2 мин"
+    },
+    "mint": {
+      "name": "Полица нане 11",
+      "zone": "Продајни простор",
+      "status": "Пратити",
+      "last": "пре 9 мин"
+    },
+    "lavender": {
+      "name": "Леја лаванде 2",
+      "zone": "Споља север",
+      "status": "Суво",
+      "last": "пре 18 мин"
+    }
+  }
+}

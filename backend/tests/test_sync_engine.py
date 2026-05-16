@@ -6,6 +6,7 @@ pattern established by Phase 8 sync checkpoint tests.
 
 from contextlib import nullcontext
 from datetime import timedelta
+from types import SimpleNamespace
 from unittest.mock import sentinel
 
 import pytest
@@ -98,7 +99,7 @@ def _patch_engine(monkeypatch):
     def _mock_events_iter(**kwargs):
         return iter(fake_events)
 
-    monkeypatch.setattr(sync_engine_service.transaction, "atomic", lambda: nullcontext())
+    monkeypatch.setattr("django.db.transaction.atomic", lambda: nullcontext())
     monkeypatch.setattr(
         sync_engine_service, "assert_engagement_allows_sync",
         lambda *, engagement: None if engagement.status == EngagementStatus.ACTIVE

@@ -148,6 +148,7 @@ def test_hmac_signature_is_deterministic():
     B2B_HMAC_MAX_SKEW_SECONDS=300,
 )
 def test_valid_hmac_allows_provider_auth():
+    """HMAC auth uses the inbound key registry now; mock the key lookup."""
     path = "/api/b2b/v1/telemetry/batch/"
     body = b'{"schema_version":"1.0"}'
     headers = build_hmac_headers(
@@ -166,8 +167,30 @@ def test_valid_hmac_allows_provider_auth():
         **_django_hmac_headers(headers),
     )
 
+    fake_key = SimpleNamespace(
+        key_id="key-1",
+        source_owner_tenant_id="owner",
+        secret_reference="settings://b2b/test-shared-secret",
+        status="active",
+        valid_from=timezone.now() - timedelta(days=1),
+        valid_until=timezone.now() + timedelta(days=1),
+        scopes=["telemetry:write"],
+    )
+
     with pytest.MonkeyPatch.context() as monkeypatch:
         monkeypatch.setattr("apps.integrations.services.hmac_signing_service.time.time", lambda: 1_800_000_000)
+        monkeypatch.setattr(
+            "apps.provider_ops.api.authentication.get_active_inbound_key",
+            lambda key_id: fake_key,
+        )
+        monkeypatch.setattr(
+            "apps.provider_ops.api.authentication.validate_inbound_key_scope",
+            lambda **kwargs: None,
+        )
+        monkeypatch.setattr(
+            "apps.provider_ops.api.authentication.resolve_secret",
+            lambda ref, resolver=None: "secret",
+        )
         principal, auth = B2BProviderAuthentication().authenticate(request)
 
     assert principal.is_authenticated is True
@@ -201,6 +224,22 @@ def test_invalid_hmac_is_rejected():
 
     with pytest.MonkeyPatch.context() as monkeypatch:
         monkeypatch.setattr("apps.integrations.services.hmac_signing_service.time.time", lambda: 1_800_000_000)
+        monkeypatch.setattr(
+            "apps.provider_ops.api.authentication.get_active_inbound_key",
+            lambda key_id: SimpleNamespace(
+                key_id="key-1", source_owner_tenant_id="owner",
+                secret_reference="settings://b2b/test-shared-secret",
+                status="active", scopes=["telemetry:write"],
+            ),
+        )
+        monkeypatch.setattr(
+            "apps.provider_ops.api.authentication.validate_inbound_key_scope",
+            lambda **kwargs: None,
+        )
+        monkeypatch.setattr(
+            "apps.provider_ops.api.authentication.resolve_secret",
+            lambda ref, resolver=None: "secret",
+        )
         with pytest.raises(exceptions.AuthenticationFailed):
             B2BProviderAuthentication().authenticate(request)
 

@@ -18,6 +18,20 @@ class DemoTenant:
 
 DEMO_TENANTS = (
     DemoTenant(
+        name="Tenant 1",
+        slug="tenant1",
+        schema_name="tenant1",
+        kind=TenantKind.OWNER,
+        domain="tenant1.localhost",
+    ),
+    DemoTenant(
+        name="Tenant 2",
+        slug="tenant2",
+        schema_name="tenant2",
+        kind=TenantKind.OWNER,
+        domain="tenant2.localhost",
+    ),
+    DemoTenant(
         name="Demo Owner",
         slug="owner",
         schema_name="owner",

@@ -2,5 +2,97 @@
   "app": {
     "title": "PlantOps Dashboard",
     "description": "IoT platform for managing plants and planters."
+  },
+  "language": {
+    "aria": "Language selector",
+    "srLatn": "SR Latin",
+    "srCyrl": "СР Cyrillic",
+    "en": "EN"
+  },
+  "nav": {
+    "primary": "Primary",
+    "overview": "Overview",
+    "actions": "Actions",
+    "forms": "Forms",
+    "tables": "Tables",
+    "menu": "Menu"
+  },
+  "hero": {
+    "eyebrow": "React UI Kit",
+    "title": "PlantOps components",
+    "subtitle": "React screens use the same production classes as Django templates and HTMX fragments.",
+    "preview": "Preview",
+    "newTask": "New task"
+  },
+  "kpi": {
+    "activePlanters": "Active planters",
+    "activePlantersMeta": "+12 this week",
+    "moistureAverage": "Moisture average",
+    "stable": "Stable",
+    "openAlerts": "Open alerts",
+    "needsReview": "Needs review",
+    "automationUptime": "Automation uptime",
+    "healthy": "Healthy"
+  },
+  "controls": {
+    "title": "Controls",
+    "help": "Buttons, segmented controls, badges, and state chips.",
+    "timeRange": "Time range",
+    "save": "Save",
+    "preview": "Preview",
+    "cancel": "Cancel",
+    "disable": "Disable",
+    "refresh": "Refresh",
+    "tenantReady": "Tenant ready",
+    "online": "Online",
+    "delayed": "Delayed",
+    "offline": "Offline"
+  },
+  "forms": {
+    "title": "Forms",
+    "reactReady": "React-ready",
+    "planterName": "Planter name",
+    "planterNameValue": "Greenhouse row A",
+    "irrigationProfile": "Irrigation profile",
+    "balanced": "Balanced",
+    "dryClimate": "Dry climate",
+    "propagation": "Propagation",
+    "operatorNote": "Operator note",
+    "operatorNoteValue": "Check sensors after the evening irrigation run.",
+    "notifyTeam": "Notify team when thresholds are exceeded",
+    "reset": "Reset",
+    "saveProfile": "Save profile"
+  },
+  "table": {
+    "title": "Operational table",
+    "help": "Reusable table treatment for device and tenant workflows.",
+    "search": "Search planters",
+    "planter": "Planter",
+    "zone": "Zone",
+    "moisture": "Moisture",
+    "status": "Status",
+    "lastReading": "Last reading",
+    "open": "Open",
+    "meterAria": "{{value}} percent"
+  },
+  "planters": {
+    "basil": {
+      "name": "Basil line 03",
+      "zone": "Greenhouse A",
+      "status": "Healthy",
+      "last": "2 min ago"
+    },
+    "mint": {
+      "name": "Mint shelf 11",
+      "zone": "Retail room",
+      "status": "Watch",
+      "last": "9 min ago"
+    },
+    "lavender": {
+      "name": "Lavender bed 2",
+      "zone": "Outdoor north",
+      "status": "Dry",
+      "last": "18 min ago"
+    }
   }
 }
