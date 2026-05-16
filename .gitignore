@@ -152,6 +152,9 @@ backend/media/
 # Nginx
 infra/nginx/*.conf.user
 
+# Zhanlu planning tool
+.zhanlu/
+
 # Local overrides
 docker-compose.override.yml
 !docker-compose.override.yml
