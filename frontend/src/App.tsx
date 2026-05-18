@@ -1,5 +1,5 @@
 import { UIKit } from "@/ui-kit/UIKit";
-import "@/styles/plantops-ui.css";
+import "@/styles/flower-ui.css";
 
 function App() {
   return <UIKit />;

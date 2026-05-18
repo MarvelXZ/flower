@@ -1,14 +1,16 @@
 {% load static i18n %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}PlantOps{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Flower — plant care and workspace management{% endblock %}">
+    <title>{% block title %}Flower{% endblock %}</title>
 
-    <link rel="stylesheet" href="{% static 'css/plantops-ui.css' %}">
+    <link rel="preconnect" href="https://rsms.me/">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
-    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+    <link rel="stylesheet" href="{% static 'css/flower-ui.css' %}">
 
     {% block extra_css %}{% endblock %}
 </head>
@@ -19,9 +21,26 @@
         });
     </script>
 
-    <main class="po-shell">
+    <main class="fw-shell">
         {% block content %}{% endblock %}
     </main>
+
+    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+
+    <script>
+        /* Initialize fw-meter fill widths from data-* attributes.
+           Runs on page load and after each HTMX swap. */
+        function initMeters(root) {
+            (root || document).querySelectorAll(".fw-meter[data-moisture], .fw-meter[data-value]").forEach((el) => {
+                const raw = el.dataset.moisture ?? el.dataset.value ?? "0";
+                const pct = Math.min(100, Math.max(0, Number(raw) || 0));
+                const fill = el.querySelector(".fw-meter-fill");
+                if (fill) fill.style.width = pct + "%";
+            });
+        }
+        document.addEventListener("DOMContentLoaded", () => initMeters());
+        document.addEventListener("htmx:afterSettle", (e) => initMeters(e.detail.target));
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>

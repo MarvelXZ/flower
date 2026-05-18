@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Flower{% endblock %}
+{% block meta_description %}Flower je multi-tenant platforma za pametne saksije, senzore, negu biljaka i B2B operacije.{% endblock %}
+
+{% block content %}
+<div class="hm-home">
+    <header class="hm-header">
+        <nav class="hm-nav" aria-label="Primary">
+            <a href="/">Home</a>
+            <a href="#platform">Platform</a>
+            <a href="#modules">Modules</a>
+        </nav>
+        <a class="hm-logo" href="/">Flower</a>
+        <nav class="hm-nav hm-nav-right" aria-label="Admin">
+            <a href="/devices/">Fleet</a>
+            <a href="/dashboard/">Dashboard</a>
+            <a href="/admin/">Admin</a>
+        </nav>
+    </header>
+
+    <section class="hm-hero">
+        <img class="hm-hero-image" src="https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=1800&q=85" alt="Interior plants with terracotta pots">
+        <div class="hm-hero-copy">
+            <span>Belgrade / platform tenant / 08:00 - 17:00</span>
+            <h1>The Home<br>Of Smart Plants.</h1>
+            <p>Multi-tenant system for smart pots, sensors, telemetry and plant care operations.</p>
+            <a class="hm-link-button" href="/dashboard/">Open Platform</a>
+        </div>
+        <div class="hm-date-card">
+            <span>May</span>
+            <strong>17</strong>
+        </div>
+        <div class="hm-sale-card">
+            <span>Tenant onboarding</span>
+            <strong>Device provisioning</strong>
+        </div>
+    </section>
+
+    <section class="hm-section hm-featured-product" id="platform">
+        <div class="hm-product-media">
+            <img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=900&q=85" alt="Green plant detail">
+        </div>
+        <div class="hm-product-copy">
+            <span class="hm-kicker">Flower control plane</span>
+            <h2>One platform tenant. Many company gardens.</h2>
+            <p>
+                Platform admin creates customer companies as isolated tenants, binds each physical
+                sensor to its owner, and monitors whether the device is alive through heartbeat and telemetry.
+            </p>
+            <div class="hm-product-meta">
+                <div><strong>Tenants</strong><span>companies, domains, schemas</span></div>
+                <div><strong>Devices</strong><span>serial, MQTT identity, credentials</span></div>
+                <div><strong>Health</strong><span>online, stale, offline, never seen</span></div>
+            </div>
+            <a class="hm-link-button hm-link-button-dark" href="/devices/provision/">Provision Device</a>
+        </div>
+    </section>
+
+    <section class="hm-section" id="modules">
+        <div class="hm-section-title">
+            <span class="hm-kicker">Perfect for operating plants</span>
+            <h2>Platform Modules</h2>
+        </div>
+
+        <div class="hm-category-grid">
+            <article>
+                <img src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=80" alt="Potted indoor plant">
+                <h3>Tenant Companies</h3>
+                <span>Company isolation</span>
+            </article>
+            <article>
+                <img src="https://images.unsplash.com/photo-1520412099551-62b6bafeb5bb?auto=format&fit=crop&w=600&q=80" alt="Plant leaves">
+                <h3>Smart Devices</h3>
+                <span>Sensor ownership</span>
+            </article>
+            <article>
+                <img src="https://images.unsplash.com/photo-1512428813834-c702c7702b78?auto=format&fit=crop&w=600&q=80" alt="Greenhouse plants">
+                <h3>Telemetry</h3>
+                <span>Live signal layer</span>
+            </article>
+            <article>
+                <img src="https://images.unsplash.com/photo-1463320898484-cdee8141c787?auto=format&fit=crop&w=600&q=80" alt="Plant shop">
+                <h3>Provider Ops</h3>
+                <span>Care workflows</span>
+            </article>
+        </div>
+    </section>
+
+    <section class="hm-promo">
+        <img src="https://images.unsplash.com/photo-1545165375-1b744b9ed444?auto=format&fit=crop&w=1800&q=85" alt="Interior plants near window">
+        <div>
+            <span class="hm-kicker">Spring House</span>
+            <h2>Plant the perfect smart infrastructure.</h2>
+            <p>
+                Flower connects beautiful plant installations with enterprise-grade operations:
+                tenants, devices, telemetry, provider tasks, marketplace and billing.
+            </p>
+            <a class="hm-link-button" href="/tenants/">Discover Now</a>
+        </div>
+    </section>
+
+    <section class="hm-section hm-deals">
+        <div class="hm-section-title">
+            <span class="hm-kicker">Great product from Flower</span>
+            <h2>Operational Surfaces</h2>
+        </div>
+        <div class="hm-deal-grid">
+            <a href="/tenants/"><span>01</span><strong>Tenant onboarding</strong><em>Create companies</em></a>
+            <a href="/devices/provision/"><span>02</span><strong>Device provisioning</strong><em>Bind sensors</em></a>
+            <a href="/devices/"><span>03</span><strong>Fleet health</strong><em>Watch live devices</em></a>
+            <a href="/admin/"><span>04</span><strong>Django admin</strong><em>System control</em></a>
+        </div>
+    </section>
+
+    <footer class="hm-footer">
+        <div>
+            <h2>Flower</h2>
+            <p>Premium smart plant infrastructure platform.</p>
+        </div>
+        <div>
+            <strong>Architecture</strong>
+            <span>Django tenants</span>
+            <span>Templates + HTMX</span>
+            <span>React islands</span>
+        </div>
+        <div>
+            <strong>Apps</strong>
+            <span>Devices</span>
+            <span>Telemetry</span>
+            <span>Care engine</span>
+        </div>
+        <div>
+            <strong>Control</strong>
+            <a href="/dashboard/">Dashboard</a>
+            <a href="/admin/">Admin</a>
+            <a href="/api/docs/">API Docs</a>
+        </div>
+    </footer>
+</div>
+{% endblock %}

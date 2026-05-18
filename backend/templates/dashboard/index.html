@@ -1,49 +1,155 @@
-{% extends "base.html" %}
+{% extends "app_base.html" %}
 {% load i18n %}
 
-{% block title %}{% translate "Dashboard" %} — PlantOps{% endblock %}
+{% block page_title %}{% translate "Platform dashboard" %}{% endblock %}
 
-{% block content %}
-<div class="po-app">
-    <aside class="po-sidebar">
-        <a class="po-brand" href="/">
-            <span class="po-brand-mark">P</span>
-            <span>PlantOps</span>
-        </a>
-        <nav class="po-nav" aria-label="{% translate 'Primary' %}">
-            <a class="po-nav-link is-active" href="#">{% translate "Dashboard" %}</a>
-            <a class="po-nav-link" href="/ui-kit/">{% translate "UI Kit" %}</a>
-            <a class="po-nav-link" href="/api/docs/">{% translate "API Docs" %}</a>
-        </nav>
-    </aside>
-    <section class="po-page">
-        <header class="po-topbar">
-            <div class="po-title-block">
-                <span class="po-eyebrow">{% translate "Operations" %}</span>
-                <h1 class="po-title">{% translate "PlantOps Dashboard" %}</h1>
-                <p class="po-subtitle">{% translate "Welcome to the PlantOps operations dashboard." %}</p>
-            </div>
-            <div class="po-actions">
-                <a class="po-btn po-btn-secondary" href="/ui-kit/">{% translate "Open UI Kit" %}</a>
-            </div>
-        </header>
-        <div class="po-grid po-grid-3">
-            <article class="po-card po-kpi">
-                <span class="po-kpi-label">{% translate "Active devices" %}</span>
-                <strong class="po-kpi-value">128</strong>
-                <span class="po-kpi-trend">{% translate "Healthy" %}</span>
+{% block topbar %}
+    {% with topbar_title=_("Platform dashboard") %}
+        {% include "partials/topbar.html" %}
+    {% endwith %}
+{% endblock %}
+
+{% block page_content %}
+    <div class="fw-page-header">
+        <div class="fw-title-block">
+            <span class="fw-eyebrow">{% translate "Platform control plane" %}</span>
+            <h1 class="fw-title">{% translate "Flower platform" %}</h1>
+            <p class="fw-subtitle">
+                {% translate "Tenant onboarding, device provisioning, and cross-tenant fleet health." %}
+            </p>
+        </div>
+        <div class="fw-actions">
+            <a class="fw-btn fw-btn-primary" href="{% url 'devices_ui:device-provision' %}">
+                {% translate "Provision device" %}
+            </a>
+            <a class="fw-btn fw-btn-secondary" href="{% url 'tenancy_ui:tenant-create' %}">
+                {% translate "Add tenant" %}
+            </a>
+        </div>
+    </div>
+
+    <section class="fw-section" aria-label="{% translate 'Platform summary' %}">
+        <div class="fw-grid fw-grid-4">
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Active tenants" %}</span>
+                <strong class="fw-kpi-value">{{ active_tenant_count }}</strong>
+                <span class="fw-kpi-meta fw-dimmed">{{ tenant_count }} {% translate "total" %}</span>
             </article>
-            <article class="po-card po-kpi">
-                <span class="po-kpi-label">{% translate "Alerts" %}</span>
-                <strong class="po-kpi-value">4</strong>
-                <span class="po-status po-status-warning">{% translate "Review" %}</span>
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Online devices" %}</span>
+                <strong class="fw-kpi-value">{{ kpi_active_devices }}</strong>
+                <span class="fw-kpi-meta">{% include "partials/status_badge.html" with status="ok" label=_("Reporting") %}</span>
             </article>
-            <article class="po-card po-kpi">
-                <span class="po-kpi-label">{% translate "Automation" %}</span>
-                <strong class="po-kpi-value">99%</strong>
-                <span class="po-status po-status-ok">{% translate "Online" %}</span>
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Needs attention" %}</span>
+                <strong class="fw-kpi-value">{{ kpi_attention_devices }}</strong>
+                <span class="fw-kpi-meta">{% include "partials/status_badge.html" with status="warning" label=_("Stale/offline") %}</span>
+            </article>
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Never seen" %}</span>
+                <strong class="fw-kpi-value">{{ kpi_never_seen_devices }}</strong>
+                <span class="fw-kpi-meta fw-dimmed">{{ kpi_total_devices }} {% translate "devices" %}</span>
             </article>
         </div>
     </section>
-</div>
+
+    {% if unhealthy_dependencies %}
+        <section class="fw-section" aria-labelledby="platform-health-heading">
+            <div class="fw-alert fw-alert-warning">
+                <span class="fw-alert-title" id="platform-health-heading">{% translate "Runtime health needs attention" %}</span>
+                <span class="fw-alert-body">
+                    {% translate "One or more platform dependencies are degraded. Check health endpoints before onboarding production devices." %}
+                </span>
+            </div>
+        </section>
+    {% endif %}
+
+    <section class="fw-section" aria-labelledby="quick-actions-heading">
+        <div class="fw-section-header">
+            <div>
+                <h2 class="fw-section-title" id="quick-actions-heading">{% translate "Platform actions" %}</h2>
+                <p class="fw-section-sub">{% translate "The main admin paths for onboarding customers and sensors." %}</p>
+            </div>
+        </div>
+
+        <div class="fw-grid fw-grid-4">
+            <a class="fw-card" href="{% url 'tenancy_ui:tenant-list' %}">
+                <span class="fw-kpi-label">{% translate "Tenants" %}</span>
+                <strong class="fw-section-title">{% translate "Manage companies" %}</strong>
+                <span class="fw-kpi-meta fw-dimmed">{% translate "Create and edit customer tenant domains." %}</span>
+            </a>
+            <a class="fw-card" href="{% url 'devices_ui:device-fleet' %}">
+                <span class="fw-kpi-label">{% translate "Fleet" %}</span>
+                <strong class="fw-section-title">{% translate "Device health" %}</strong>
+                <span class="fw-kpi-meta fw-dimmed">{% translate "See live, stale, and offline sensors." %}</span>
+            </a>
+            <a class="fw-card" href="{% url 'devices_ui:device-provision' %}">
+                <span class="fw-kpi-label">{% translate "Provisioning" %}</span>
+                <strong class="fw-section-title">{% translate "Bind device" %}</strong>
+                <span class="fw-kpi-meta fw-dimmed">{% translate "Attach a physical sensor to a tenant." %}</span>
+            </a>
+            <a class="fw-card" href="/admin/">
+                <span class="fw-kpi-label">{% translate "Django" %}</span>
+                <strong class="fw-section-title">{% translate "Admin" %}</strong>
+                <span class="fw-kpi-meta fw-dimmed">{% translate "Low-level models and platform tools." %}</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="fw-section" aria-labelledby="recent-devices-heading">
+        <div class="fw-section-header">
+            <div>
+                <h2 class="fw-section-title" id="recent-devices-heading">{% translate "Recent device signals" %}</h2>
+                <p class="fw-section-sub">{% translate "Latest cross-tenant heartbeat state visible to the platform." %}</p>
+            </div>
+            <a class="fw-btn fw-btn-secondary fw-btn-sm" href="{% url 'devices_ui:device-fleet' %}">
+                {% translate "Open fleet" %}
+            </a>
+        </div>
+
+        {% if recent_devices %}
+            <div class="fw-table-wrap">
+                <table class="fw-table">
+                    <thead>
+                        <tr>
+                            <th>{% translate "Health" %}</th>
+                            <th>{% translate "Device" %}</th>
+                            <th>{% translate "Tenant" %}</th>
+                            <th>{% translate "Status" %}</th>
+                            <th>{% translate "Last seen" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for device in recent_devices %}
+                            <tr>
+                                <td>{% include "partials/status_badge.html" with status=device.health_status label=device.health_label %}</td>
+                                <td>
+                                    <strong>{{ device.name }}</strong>
+                                    <div class="fw-dimmed">{{ device.serial_number }}</div>
+                                </td>
+                                <td>
+                                    <strong>{{ device.tenant_name }}</strong>
+                                    <div class="fw-dimmed">{{ device.tenant_schema }}</div>
+                                </td>
+                                <td>{{ device.status }}</td>
+                                <td>
+                                    {% if device.last_seen_at %}
+                                        {{ device.last_seen_at|date:"Y-m-d H:i:s" }}
+                                    {% else %}
+                                        <span class="fw-dimmed">{% translate "No heartbeat yet" %}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="fw-empty">
+                <div class="fw-empty-icon">F</div>
+                <p class="fw-empty-title">{% translate "No devices provisioned yet" %}</p>
+                <p class="fw-dimmed">{% translate "Create a tenant and bind the first sensor from device provisioning." %}</p>
+            </div>
+        {% endif %}
+    </section>
 {% endblock %}

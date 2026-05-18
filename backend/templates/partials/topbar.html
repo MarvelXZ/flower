@@ -1,0 +1,46 @@
+{% load i18n %}
+{# Topbar partial — sticky header inside .fw-page
+   Context vars (optional):
+     topbar_title    — page title shown in topbar breadcrumb
+     topbar_parent   — parent nav label (string)
+     topbar_parent_url — parent nav URL
+#}
+
+<header class="fw-topbar" role="banner">
+
+    <div class="fw-topbar-left">
+        {% if topbar_parent %}
+            <nav class="fw-breadcrumb" aria-label="{% translate 'Breadcrumb' %}">
+                {% if topbar_parent_url %}
+                    <a href="{{ topbar_parent_url }}">{{ topbar_parent }}</a>
+                {% else %}
+                    <span>{{ topbar_parent }}</span>
+                {% endif %}
+                <span class="fw-breadcrumb-sep" aria-hidden="true">/</span>
+                <span aria-current="page">{{ topbar_title }}</span>
+            </nav>
+        {% else %}
+            <span class="fw-dimmed">{{ topbar_title }}</span>
+        {% endif %}
+    </div>
+
+    <div class="fw-topbar-right">
+        {# Notifications bell placeholder #}
+        {% if notification_count %}
+            <a class="fw-btn fw-btn-ghost fw-icon-btn"
+               href="{% url 'notifications:list' %}"
+               aria-label="{% translate 'Notifications' %} ({{ notification_count }})">
+                🔔
+            </a>
+        {% endif %}
+
+        {# User menu placeholder — replace with actual user context #}
+        <div class="fw-inline">
+            <span class="fw-dimmed" style="font-size:0.84rem">{{ request.user.email|default:"—" }}</span>
+            <a class="fw-btn fw-btn-ghost fw-btn-sm" href="#">
+                {% translate "Account" %}
+            </a>
+        </div>
+    </div>
+
+</header>

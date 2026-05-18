@@ -1,17 +1,18 @@
 {
   "app": {
-    "title": "PlantOps kontrolna tabla",
-    "description": "IoT platforma za upravljanje biljkama i žardinjerama."
+    "title": "Flower kontrolna tabla",
+    "description": "IoT platforma za upravljanje biljkama i zardinjerama."
   },
   "language": {
     "aria": "Izbor jezika",
     "srLatn": "SR latinica",
-    "srCyrl": "СР ћирилица",
+    "srCyrl": "SR cirilica",
     "en": "EN"
   },
   "nav": {
     "primary": "Glavna navigacija",
     "overview": "Pregled",
+    "tokens": "Tokeni",
     "actions": "Akcije",
     "forms": "Forme",
     "tables": "Tabele",
@@ -19,61 +20,89 @@
   },
   "hero": {
     "eyebrow": "React UI paket",
-    "title": "PlantOps komponente",
-    "subtitle": "React ekrani koriste iste produkcione klase kao Django šabloni i HTMX fragmenti.",
+    "title": "Flower komponente",
+    "subtitle": "React ekrani koriste iste produkcione klase kao Django sabloni i HTMX fragmenti.",
     "preview": "Pregled",
     "newTask": "Novi zadatak"
   },
   "kpi": {
-    "activePlanters": "Aktivne žardinjere",
+    "activePlanters": "Aktivne zardinjere",
     "activePlantersMeta": "+12 ove nedelje",
-    "moistureAverage": "Prosek vlažnosti",
+    "moistureAverage": "Prosek vlaznosti",
     "stable": "Stabilno",
     "openAlerts": "Otvorena upozorenja",
     "needsReview": "Za proveru",
     "automationUptime": "Dostupnost automatizacije",
     "healthy": "Zdravo"
   },
+  "tokens": {
+    "title": "Tokeni dizajna",
+    "help": "Osnovne boje i vrednosti koje dele React i Django sloj.",
+    "surface": "Povrsina",
+    "primary": "Primarna",
+    "warning": "Upozorenje",
+    "danger": "Kriticno"
+  },
   "controls": {
     "title": "Kontrole",
-    "help": "Dugmad, segmentirane kontrole, oznake i status čipovi.",
+    "help": "Dugmad, segmentirane kontrole, oznake i status cipovi.",
     "timeRange": "Vremenski opseg",
-    "save": "Sačuvaj",
+    "save": "Sacuvaj",
     "preview": "Pregled",
-    "cancel": "Otkaži",
-    "disable": "Onemogući",
-    "refresh": "Osveži",
+    "cancel": "Otkazi",
+    "disable": "Onemoguci",
+    "refresh": "Osvezi",
     "tenantReady": "Tenant spreman",
-    "online": "Na mreži",
+    "draft": "Nacrt",
+    "provider": "Provider",
+    "online": "Na mrezi",
     "delayed": "Kasni",
-    "offline": "Van mreže"
+    "offline": "Van mreze",
+    "pending": "Na cekanju"
+  },
+  "alerts": {
+    "title": "Upozorenja",
+    "info": "Info",
+    "infoBody": "Ovo je informativno upozorenje za sistemske poruke.",
+    "success": "Uspesno",
+    "successBody": "Operacija je uspesno zavrsena.",
+    "warning": "Upozorenje",
+    "warningBody": "Vlaznost je ispod preporucenog praga na 3 zardinjere.",
+    "danger": "Kriticno",
+    "dangerBody": "Senzor je van mreze - Linija bosiljka 03 ne izvestava."
   },
   "forms": {
     "title": "Forme",
     "reactReady": "Spremno za React",
-    "planterName": "Naziv žardinjere",
+    "planterName": "Naziv zardinjere",
     "planterNameValue": "Red A u stakleniku",
     "irrigationProfile": "Profil navodnjavanja",
-    "balanced": "Uravnotežen",
+    "balanced": "Uravnotezen",
     "dryClimate": "Suva klima",
-    "propagation": "Razmnožavanje",
+    "propagation": "Razmnozavanje",
     "operatorNote": "Napomena operatera",
-    "operatorNoteValue": "Proveriti senzore posle večernjeg navodnjavanja.",
-    "notifyTeam": "Obavesti tim kada se pragovi prekorače",
-    "reset": "Poništi",
-    "saveProfile": "Sačuvaj profil"
+    "operatorNoteValue": "Proveriti senzore posle vecernjeg navodnjavanja.",
+    "noteHelp": "Interna napomena - nije vidljiva klijentima.",
+    "notifyTeam": "Obavesti tim kada se pragovi prekorace",
+    "reset": "Ponisti",
+    "saveProfile": "Sacuvaj profil"
   },
   "table": {
     "title": "Operativna tabela",
-    "help": "Ponovljivi prikaz tabela za tokove uređaja i tenanta.",
-    "search": "Pretraži žardinjere",
-    "planter": "Žardinjera",
+    "help": "Ponovljivi prikaz tabela za tokove uredjaja i tenanta.",
+    "search": "Pretrazi zardinjere",
+    "planter": "Zardinjera",
     "zone": "Zona",
-    "moisture": "Vlažnost",
+    "moisture": "Vlaznost",
     "status": "Status",
-    "lastReading": "Poslednje očitavanje",
+    "lastReading": "Poslednje ocitavanje",
     "open": "Otvori",
     "meterAria": "{{value}} procenata"
+  },
+  "states": {
+    "title": "Prazna i stanja ucitavanja",
+    "emptyTitle": "Nema konfigurisanih zardinjera",
+    "emptyBody": "Dodajte prvu zardinjeru da biste poceli pracenje."
   },
   "planters": {
     "basil": {

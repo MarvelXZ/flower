@@ -1,0 +1,112 @@
+{% extends "tenancy/layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% translate "Device fleet" %}{% endblock %}
+{% block topbar_title %}{% translate "Device fleet" %}{% endblock %}
+
+{% block page_content %}
+    <div class="fw-page-header">
+        <div class="fw-title-block">
+            <span class="fw-eyebrow">{% translate "Platform control plane" %}</span>
+            <h1 class="fw-title">{% translate "Device fleet" %}</h1>
+            <p class="fw-subtitle">
+                {% translate "Cross-tenant view of sensors, smart pots, and their last heartbeat state." %}
+            </p>
+        </div>
+        <div class="fw-actions">
+            <a class="fw-btn fw-btn-primary" href="{% url 'devices_ui:device-provision' %}">
+                {% translate "Provision device" %}
+            </a>
+            <a class="fw-btn fw-btn-secondary" href="/admin/">{% translate "Django admin" %}</a>
+        </div>
+    </div>
+
+    <section class="fw-section" aria-label="{% translate 'Device health summary' %}">
+        <div class="fw-grid fw-grid-4">
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Total devices" %}</span>
+                <strong class="fw-kpi-value">{{ total_devices }}</strong>
+                <span class="fw-kpi-meta fw-dimmed">{% translate "Across active tenants" %}</span>
+            </article>
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Online" %}</span>
+                <strong class="fw-kpi-value">{{ online_devices }}</strong>
+                <span class="fw-kpi-meta">{% include "partials/status_badge.html" with status="ok" label=_("Reporting") %}</span>
+            </article>
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Needs attention" %}</span>
+                <strong class="fw-kpi-value">{{ attention_devices }}</strong>
+                <span class="fw-kpi-meta">{% include "partials/status_badge.html" with status="warning" label=_("Stale/offline") %}</span>
+            </article>
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Never seen" %}</span>
+                <strong class="fw-kpi-value">{{ never_seen_devices }}</strong>
+                <span class="fw-kpi-meta">{% include "partials/status_badge.html" with status="muted" label=_("No heartbeat") %}</span>
+            </article>
+        </div>
+    </section>
+
+    <section class="fw-section" aria-labelledby="device-fleet-heading">
+        <div class="fw-section-header">
+            <div>
+                <h2 class="fw-section-title" id="device-fleet-heading">{% translate "Devices" %}</h2>
+                <p class="fw-section-sub">
+                    {% translate "Online means the last heartbeat is within three expected heartbeat intervals." %}
+                </p>
+            </div>
+        </div>
+
+        {% if devices %}
+            <div class="fw-table-wrap">
+                <table class="fw-table">
+                    <thead>
+                        <tr>
+                            <th>{% translate "Health" %}</th>
+                            <th>{% translate "Device" %}</th>
+                            <th>{% translate "Tenant" %}</th>
+                            <th>{% translate "Lifecycle" %}</th>
+                            <th>{% translate "Last seen" %}</th>
+                            <th>{% translate "MQTT client" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for device in devices %}
+                            <tr>
+                                <td>
+                                    {% include "partials/status_badge.html" with status=device.health_status label=device.health_label %}
+                                </td>
+                                <td>
+                                    <strong>{{ device.name }}</strong>
+                                    <div class="fw-dimmed">{{ device.serial_number }}</div>
+                                </td>
+                                <td>
+                                    <strong>{{ device.tenant_name }}</strong>
+                                    <div class="fw-dimmed">{{ device.tenant_schema }}</div>
+                                </td>
+                                <td>
+                                    {{ device.status }}
+                                    <div class="fw-dimmed">{{ device.provisioning_status }}</div>
+                                </td>
+                                <td>
+                                    {% if device.last_seen_at %}
+                                        {{ device.last_seen_at|date:"Y-m-d H:i:s" }}
+                                        <div class="fw-dimmed">{{ device.heartbeat_interval_seconds }}s heartbeat</div>
+                                    {% else %}
+                                        <span class="fw-dimmed">{% translate "No heartbeat yet" %}</span>
+                                    {% endif %}
+                                </td>
+                                <td><code>{{ device.mqtt_client_id }}</code></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="fw-empty">
+                <div class="fw-empty-icon">F</div>
+                <p class="fw-empty-title">{% translate "No devices provisioned yet" %}</p>
+                <p class="fw-dimmed">{% translate "Provision the first sensor or smart pot for a tenant company." %}</p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

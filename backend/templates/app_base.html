@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{% block page_title %}{% endblock %} — Flower{% endblock %}
+
+{% block content %}
+<div class="fw-app">
+
+    {% block sidebar %}
+        {% include "partials/sidebar.html" %}
+    {% endblock %}
+
+    <section class="fw-page">
+
+        {% block topbar %}
+            {% include "partials/topbar.html" %}
+        {% endblock %}
+
+        <div class="fw-page-body">
+            {% block page_content %}{% endblock %}
+        </div>
+
+    </section>
+
+</div>
+{% endblock %}

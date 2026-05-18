@@ -1,0 +1,118 @@
+{% extends "tenancy/layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{{ form_title }}{% endblock %}
+{% block topbar_title %}{{ form_title }}{% endblock %}
+
+{% block page_content %}
+    <div class="fw-page-header">
+        <div class="fw-title-block">
+            <span class="fw-eyebrow">{% translate "Tenant onboarding" %}</span>
+            <h1 class="fw-title">{{ form_title }}</h1>
+            <p class="fw-subtitle">{{ form_subtitle }}</p>
+        </div>
+        <div class="fw-actions">
+            <a class="fw-btn fw-btn-secondary" href="{% url 'tenancy_ui:tenant-list' %}">
+                {% translate "Back to tenants" %}
+            </a>
+        </div>
+    </div>
+
+    <section class="fw-section">
+        <form class="fw-panel fw-form" method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="fw-alert fw-alert-danger">
+                    <span class="fw-alert-title">{% translate "Please review the form" %}</span>
+                    <span class="fw-alert-body">{{ form.non_field_errors }}</span>
+                </div>
+            {% endif %}
+
+            <div class="fw-grid fw-grid-2">
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.name.label }}</span>
+                    <input class="fw-field {% if form.name.errors %}fw-field-error{% endif %}"
+                           type="text" name="{{ form.name.html_name }}"
+                           value="{{ form.name.value|default_if_none:'' }}"
+                           maxlength="150" required>
+                    {% for error in form.name.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+                </label>
+
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.slug.label }}</span>
+                    <input class="fw-field {% if form.slug.errors %}fw-field-error{% endif %}"
+                           type="text" name="{{ form.slug.html_name }}"
+                           value="{{ form.slug.value|default_if_none:'' }}"
+                           maxlength="80" required>
+                    {% for error in form.slug.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+                </label>
+            </div>
+
+            {% if mode == "create" %}
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.schema_name.label }}</span>
+                    <input class="fw-field {% if form.schema_name.errors %}fw-field-error{% endif %}"
+                           type="text" name="{{ form.schema_name.html_name }}"
+                           value="{{ form.schema_name.value|default_if_none:'' }}"
+                           maxlength="63" required>
+                    <span class="fw-help">{{ form.schema_name.help_text }}</span>
+                    {% for error in form.schema_name.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+                </label>
+            {% else %}
+                <div class="fw-field-group">
+                    <span class="fw-label">{% translate "Schema name" %}</span>
+                    <input class="fw-field" type="text" value="{{ object.schema_name }}" disabled>
+                    <span class="fw-help">{% translate "Schema name is immutable after tenant creation." %}</span>
+                </div>
+            {% endif %}
+
+            <div class="fw-grid fw-grid-2">
+                <label class="fw-field-group">
+                    <span class="fw-label">
+                        {% if mode == "create" %}{{ form.domain.label }}{% else %}{{ form.primary_domain.label }}{% endif %}
+                    </span>
+                    {% if mode == "create" %}
+                        <input class="fw-field {% if form.domain.errors %}fw-field-error{% endif %}"
+                               type="text" name="{{ form.domain.html_name }}"
+                               value="{{ form.domain.value|default_if_none:'' }}"
+                               maxlength="253" required>
+                        <span class="fw-help">{{ form.domain.help_text }}</span>
+                        {% for error in form.domain.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+                    {% else %}
+                        <input class="fw-field {% if form.primary_domain.errors %}fw-field-error{% endif %}"
+                               type="text" name="{{ form.primary_domain.html_name }}"
+                               value="{{ form.primary_domain.value|default_if_none:'' }}"
+                               maxlength="253" required>
+                        {% for error in form.primary_domain.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+                    {% endif %}
+                </label>
+
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.kind.label }}</span>
+                    <select class="fw-select {% if form.kind.errors %}fw-field-error{% endif %}"
+                            name="{{ form.kind.html_name }}" required>
+                        {% for value, label in form.kind.field.choices %}
+                            <option value="{{ value }}" {% if form.kind.value == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    {% for error in form.kind.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+                </label>
+            </div>
+
+            {% if mode == "edit" %}
+                <label class="fw-check-row">
+                    <input type="checkbox" name="{{ form.is_active.html_name }}" {% if form.is_active.value %}checked{% endif %}>
+                    <span>{{ form.is_active.label }}</span>
+                </label>
+            {% endif %}
+
+            <div class="fw-actions">
+                <a class="fw-btn fw-btn-ghost" href="{% url 'tenancy_ui:tenant-list' %}">
+                    {% translate "Cancel" %}
+                </a>
+                <button class="fw-btn fw-btn-primary" type="submit">{{ submit_label }}</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}

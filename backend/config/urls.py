@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.urls import include, path
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -11,6 +12,7 @@ from drf_spectacular.views import (
 
 from apps.core.views import (
     DashboardView,
+    PlatformHomeView,
     UIKitView,
     core_health_live,
     core_health_ready,
@@ -31,8 +33,12 @@ urlpatterns = [
     # -----------------------------------------------------------------------
     # Admin
     # -----------------------------------------------------------------------
-    path("", DashboardView.as_view(), name="dashboard"),
+    path("", PlatformHomeView.as_view(), name="platform-home"),
+    path("dashboard/", DashboardView.as_view(), name="dashboard"),
+    path("auth/logout/", LogoutView.as_view(next_page="/"), name="logout"),
     path("admin/", admin.site.urls),
+    path("tenants/", include("apps.tenancy.web_urls", namespace="tenancy_ui")),
+    path("devices/", include("apps.devices.web_urls", namespace="devices_ui")),
     path("ui-kit/", UIKitView.as_view(), name="ui-kit"),
     path("ui-kit/sample/", ui_kit_sample, name="ui-kit-sample"),
 

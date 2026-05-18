@@ -1,200 +1,311 @@
-{% extends "base.html" %}
+{% extends "app_base.html" %}
 {% load i18n %}
 
-{% block title %}{% translate "UI Kit" %} - PlantOps{% endblock %}
+{% block page_title %}{% translate "UI Kit" %}{% endblock %}
 
-{% block content %}
-<div class="po-app">
-    <aside class="po-sidebar">
-        <a class="po-brand" href="/ui-kit/">
-            <span class="po-brand-mark">P</span>
-            <span>PlantOps</span>
-        </a>
-        <nav class="po-nav" aria-label="{% translate 'Primary' %}">
-            <a class="po-nav-link is-active" href="#overview">Overview</a>
-            <a class="po-nav-link" href="#actions">Actions</a>
-            <a class="po-nav-link" href="#forms">Forms</a>
-            <a class="po-nav-link" href="#tables">Tables</a>
-            <a class="po-nav-link" href="#htmx">HTMX</a>
-        </nav>
-        <button class="po-btn po-btn-secondary po-mobile-menu" type="button">Menu</button>
-    </aside>
+{% block topbar %}
+    {% with topbar_title=_("UI Kit") topbar_parent=_("Developer tools") %}
+        {% include "partials/topbar.html" %}
+    {% endwith %}
+{% endblock %}
 
-    <section class="po-page">
-        <header class="po-topbar" id="overview">
-            <div class="po-title-block">
-                <span class="po-eyebrow">Design system</span>
-                <h1 class="po-title">PlantOps UI Kit</h1>
-                <p class="po-subtitle">Shared operational interface patterns for Django templates, HTMX fragments, and React screens.</p>
-            </div>
-            <div class="po-actions">
-                <a class="po-btn po-btn-secondary" href="/admin/">Admin</a>
-                <button class="po-btn po-btn-primary" type="button">New task</button>
-            </div>
-        </header>
+{% block page_content %}
 
-        <div class="po-grid po-grid-4">
-            <article class="po-card po-kpi">
-                <span class="po-kpi-label">Active planters</span>
-                <strong class="po-kpi-value">428</strong>
-                <span class="po-kpi-trend">+12 this week</span>
-            </article>
-            <article class="po-card po-kpi">
-                <span class="po-kpi-label">Moisture average</span>
-                <strong class="po-kpi-value">71%</strong>
-                <span class="po-kpi-trend">Stable</span>
-            </article>
-            <article class="po-card po-kpi">
-                <span class="po-kpi-label">Open alerts</span>
-                <strong class="po-kpi-value">9</strong>
-                <span class="po-status po-status-warning">Needs review</span>
-            </article>
-            <article class="po-card po-kpi">
-                <span class="po-kpi-label">Automation uptime</span>
-                <strong class="po-kpi-value">99.3%</strong>
-                <span class="po-kpi-trend">Healthy</span>
-            </article>
+    <div class="fw-page-header" id="overview">
+        <div class="fw-title-block">
+            <span class="fw-eyebrow">{% translate "Design system" %}</span>
+            <h1 class="fw-title">Flower UI Kit</h1>
+            <p class="fw-subtitle">
+                {% translate "Shared interface patterns for Django templates, HTMX fragments, and React screens. Beton + biljke + premium minimalizam." %}
+            </p>
+        </div>
+        <div class="fw-actions">
+            <a class="fw-btn fw-btn-secondary" href="/admin/">{% translate "Admin" %}</a>
+            <button class="fw-btn fw-btn-primary" type="button">{% translate "New task" %}</button>
+        </div>
+    </div>
+
+    {# ----------------------------------------------------------------
+       COLOR TOKENS
+    ---------------------------------------------------------------- #}
+    <section class="fw-section" id="tokens">
+        <div class="fw-section-header">
+            <h2 class="fw-section-title">{% translate "Color tokens" %}</h2>
+            <span class="fw-badge">CSS variables</span>
         </div>
 
-        <section class="po-section" id="actions">
-            <div class="po-section-header">
-                <div>
-                    <h2 class="po-section-title">Actions, badges, and statuses</h2>
-                    <p class="po-help">Buttons stay compact and predictable for repeated operational workflows.</p>
-                </div>
-                <div class="po-segmented" aria-label="Time range">
-                    <button class="is-active" type="button">24h</button>
-                    <button type="button">7d</button>
-                    <button type="button">30d</button>
-                </div>
-            </div>
-            <div class="po-panel po-stack">
-                <div class="po-inline">
-                    <button class="po-btn po-btn-primary" type="button">Save</button>
-                    <button class="po-btn po-btn-secondary" type="button">Preview</button>
-                    <button class="po-btn po-btn-ghost" type="button">Cancel</button>
-                    <button class="po-btn po-btn-danger" type="button">Disable</button>
-                    <button class="po-btn po-btn-secondary po-icon-btn" type="button" aria-label="Refresh">R</button>
-                </div>
-                <div class="po-inline">
-                    <span class="po-badge">Tenant ready</span>
-                    <span class="po-status po-status-ok">Online</span>
-                    <span class="po-status po-status-warning">Delayed</span>
-                    <span class="po-status po-status-danger">Offline</span>
-                </div>
-            </div>
-        </section>
+        <h3 class="fw-section-sub" style="margin-bottom:var(--fw-space-3)">Concrete</h3>
+        <div class="fw-swatch-grid">
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-concrete-50)"></div><div class="fw-swatch-body">concrete-50<br>#F8F6F4</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-concrete-200)"></div><div class="fw-swatch-body">concrete-200<br>#E2DDD8</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-concrete-500)"></div><div class="fw-swatch-body">concrete-500<br>#918B84</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-concrete-700)"></div><div class="fw-swatch-body">concrete-700<br>#56524E</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-concrete-900)"></div><div class="fw-swatch-body">concrete-900<br>#252220</div></div>
+        </div>
 
-        <section class="po-section">
-            <div class="po-section-header">
-                <h2 class="po-section-title">Color tokens</h2>
-            </div>
-            <div class="po-swatch-grid">
-                <div class="po-swatch"><div class="po-swatch-color" style="background:#246b45"></div><div class="po-swatch-body">Primary<br>#246b45</div></div>
-                <div class="po-swatch"><div class="po-swatch-color" style="background:#2f6f8f"></div><div class="po-swatch-body">Accent<br>#2f6f8f</div></div>
-                <div class="po-swatch"><div class="po-swatch-color" style="background:#a15f07"></div><div class="po-swatch-body">Warning<br>#a15f07</div></div>
-                <div class="po-swatch"><div class="po-swatch-color" style="background:#b23a3a"></div><div class="po-swatch-body">Danger<br>#b23a3a</div></div>
-                <div class="po-swatch"><div class="po-swatch-color" style="background:#18211b"></div><div class="po-swatch-body">Ink<br>#18211b</div></div>
-                <div class="po-swatch"><div class="po-swatch-color" style="background:#f5f7f2"></div><div class="po-swatch-body">Background<br>#f5f7f2</div></div>
-            </div>
-        </section>
+        <h3 class="fw-section-sub" style="margin-top:var(--fw-space-5);margin-bottom:var(--fw-space-3)">Leaf</h3>
+        <div class="fw-swatch-grid">
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-leaf-50)"></div><div class="fw-swatch-body">leaf-50<br>#EFF5F0</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-leaf-100)"></div><div class="fw-swatch-body">leaf-100<br>#D5E8C8</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-leaf-400)"></div><div class="fw-swatch-body">leaf-400<br>#6B9262</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-leaf-600)"></div><div class="fw-swatch-body">leaf-600 ★<br>#3C5C44</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-leaf-800)"></div><div class="fw-swatch-body">leaf-800<br>#1E3024</div></div>
+        </div>
 
-        <section class="po-section" id="forms">
-            <div class="po-section-header">
-                <h2 class="po-section-title">Forms</h2>
-                <span class="po-badge">Django-ready</span>
-            </div>
-            <form class="po-panel po-form" hx-post="/ui-kit/sample/" hx-target="#htmx-result">
-                <div class="po-grid po-grid-2">
-                    <label class="po-field-group">
-                        <span class="po-label">Planter name</span>
-                        <input class="po-field" name="name" placeholder="Greenhouse row A" value="Greenhouse row A">
-                    </label>
-                    <label class="po-field-group">
-                        <span class="po-label">Irrigation profile</span>
-                        <select class="po-select" name="profile">
-                            <option>Balanced</option>
-                            <option>Dry climate</option>
-                            <option>Propagation</option>
-                        </select>
-                    </label>
-                </div>
-                <label class="po-field-group">
-                    <span class="po-label">Operator note</span>
-                    <textarea class="po-textarea" name="note">Check sensors after the evening irrigation run.</textarea>
-                </label>
-                <label class="po-check-row">
-                    <input type="checkbox" checked>
-                    <span>Notify team when thresholds are exceeded</span>
-                </label>
-                <div class="po-actions">
-                    <button class="po-btn po-btn-secondary" type="reset">Reset</button>
-                    <button class="po-btn po-btn-primary" type="submit">Send HTMX sample</button>
-                </div>
-            </form>
-        </section>
+        <h3 class="fw-section-sub" style="margin-top:var(--fw-space-5);margin-bottom:var(--fw-space-3)">Soil</h3>
+        <div class="fw-swatch-grid">
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-soil-50)"></div><div class="fw-swatch-body">soil-50<br>#FAF5EF</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-soil-100)"></div><div class="fw-swatch-body">soil-100<br>#EEDCC0</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-soil-300)"></div><div class="fw-swatch-body">soil-300<br>#C69870</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-soil-500)"></div><div class="fw-swatch-body">soil-500 ★<br>#8D6038</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-soil-700)"></div><div class="fw-swatch-body">soil-700<br>#513820</div></div>
+        </div>
 
-        <section class="po-section" id="tables">
-            <div class="po-section-header">
-                <div>
-                    <h2 class="po-section-title">Operational table</h2>
-                    <p class="po-help">Dense enough for scanning, with clear state and progress treatment.</p>
-                </div>
-                <div class="po-toolbar">
-                    <input class="po-field po-search" type="search" placeholder="Search planters">
-                </div>
-            </div>
-            <div class="po-table-wrap">
-                <table class="po-table">
-                    <thead>
-                        <tr>
-                            <th>Planter</th>
-                            <th>Zone</th>
-                            <th>Moisture</th>
-                            <th>Status</th>
-                            <th>Last reading</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Basil line 03</strong></td>
-                            <td>Greenhouse A</td>
-                            <td><div class="po-meter" aria-label="82 percent"><span style="width:82%"></span></div></td>
-                            <td><span class="po-status po-status-ok">Healthy</span></td>
-                            <td>2 min ago</td>
-                            <td><button class="po-btn po-btn-secondary" type="button">Open</button></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Mint shelf 11</strong></td>
-                            <td>Retail room</td>
-                            <td><div class="po-meter" aria-label="44 percent"><span style="width:44%"></span></div></td>
-                            <td><span class="po-status po-status-warning">Watch</span></td>
-                            <td>9 min ago</td>
-                            <td><button class="po-btn po-btn-secondary" type="button">Open</button></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Lavender bed 2</strong></td>
-                            <td>Outdoor north</td>
-                            <td><div class="po-meter" aria-label="18 percent"><span style="width:18%"></span></div></td>
-                            <td><span class="po-status po-status-danger">Dry</span></td>
-                            <td>18 min ago</td>
-                            <td><button class="po-btn po-btn-secondary" type="button">Open</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="po-section" id="htmx">
-            <div class="po-section-header">
-                <h2 class="po-section-title">HTMX partial state</h2>
-            </div>
-            <div id="htmx-result" class="po-alert">
-                <strong>Ready for fragment updates</strong>
-                <span class="po-muted">Submit the form above to replace this block with a server-rendered partial.</span>
-            </div>
-        </section>
+        <h3 class="fw-section-sub" style="margin-top:var(--fw-space-5);margin-bottom:var(--fw-space-3)">Sand</h3>
+        <div class="fw-swatch-grid">
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-sand-50)"></div><div class="fw-swatch-body">sand-50<br>#FAFAF7</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-sand-100)"></div><div class="fw-swatch-body">sand-100<br>#F4F0E8</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-sand-200)"></div><div class="fw-swatch-body">sand-200<br>#EDE6D7</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-sand-400)"></div><div class="fw-swatch-body">sand-400<br>#D4C6AC</div></div>
+            <div class="fw-swatch"><div class="fw-swatch-color" style="background:var(--color-sand-600)"></div><div class="fw-swatch-body">sand-600<br>#A8906C</div></div>
+        </div>
     </section>
-</div>
+
+    {# ----------------------------------------------------------------
+       KPI CARDS
+    ---------------------------------------------------------------- #}
+    <section class="fw-section" id="kpi">
+        <div class="fw-section-header">
+            <h2 class="fw-section-title">{% translate "KPI cards" %}</h2>
+        </div>
+        <div class="fw-grid fw-grid-4">
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Active planters" %}</span>
+                <strong class="fw-kpi-value">428</strong>
+                <span class="fw-kpi-meta fw-dimmed">+12 {% translate "this week" %}</span>
+            </article>
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Moisture average" %}</span>
+                <strong class="fw-kpi-value">71%</strong>
+                <span class="fw-kpi-meta fw-dimmed">{% translate "Stable" %}</span>
+            </article>
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Open alerts" %}</span>
+                <strong class="fw-kpi-value">9</strong>
+                <span class="fw-kpi-meta">
+                    {% include "partials/status_badge.html" with status="warning" label=_("Needs review") %}
+                </span>
+            </article>
+            <article class="fw-card fw-kpi">
+                <span class="fw-kpi-label">{% translate "Automation uptime" %}</span>
+                <strong class="fw-kpi-value">99.3%</strong>
+                <span class="fw-kpi-meta">
+                    {% include "partials/status_badge.html" with status="ok" label=_("Healthy") %}
+                </span>
+            </article>
+        </div>
+    </section>
+
+    {# ----------------------------------------------------------------
+       BUTTONS & STATUS
+    ---------------------------------------------------------------- #}
+    <section class="fw-section" id="actions">
+        <div class="fw-section-header">
+            <div>
+                <h2 class="fw-section-title">{% translate "Buttons, badges, statuses" %}</h2>
+                <p class="fw-help">{% translate "Compact and predictable for repeated operational workflows." %}</p>
+            </div>
+            <div class="fw-segmented" aria-label="{% translate 'Time range' %}">
+                <button class="is-active" type="button">24h</button>
+                <button type="button">7d</button>
+                <button type="button">30d</button>
+            </div>
+        </div>
+
+        <div class="fw-panel fw-stack">
+            <div class="fw-inline">
+                <button class="fw-btn fw-btn-primary" type="button">{% translate "Save" %}</button>
+                <button class="fw-btn fw-btn-secondary" type="button">{% translate "Preview" %}</button>
+                <button class="fw-btn fw-btn-ghost" type="button">{% translate "Cancel" %}</button>
+                <button class="fw-btn fw-btn-danger" type="button">{% translate "Disable" %}</button>
+                <button class="fw-btn fw-btn-secondary fw-icon-btn" type="button" aria-label="{% translate 'Refresh' %}">↺</button>
+            </div>
+            <div class="fw-inline">
+                <span class="fw-badge">{% translate "Tenant ready" %}</span>
+                <span class="fw-badge fw-badge-neutral">{% translate "Draft" %}</span>
+                <span class="fw-badge fw-badge-accent">{% translate "Provider" %}</span>
+                {% include "partials/status_badge.html" with status="ok" label=_("Online") %}
+                {% include "partials/status_badge.html" with status="warning" label=_("Delayed") %}
+                {% include "partials/status_badge.html" with status="danger" label=_("Offline") %}
+                {% include "partials/status_badge.html" with status="info" label=_("Pending") %}
+                {% include "partials/status_badge.html" with status="muted" label=_("Unknown") %}
+            </div>
+        </div>
+    </section>
+
+    {# ----------------------------------------------------------------
+       ALERTS
+    ---------------------------------------------------------------- #}
+    <section class="fw-section" id="alerts">
+        <div class="fw-section-header">
+            <h2 class="fw-section-title">{% translate "Alerts" %}</h2>
+        </div>
+        <div class="fw-stack">
+            <div class="fw-alert">
+                <span class="fw-alert-title">{% translate "Info" %}</span>
+                <span class="fw-alert-body">{% translate "This is an informational alert for system messages." %}</span>
+            </div>
+            <div class="fw-alert fw-alert-success">
+                <span class="fw-alert-title">{% translate "Success" %}</span>
+                <span class="fw-alert-body">{% translate "The operation completed successfully." %}</span>
+            </div>
+            <div class="fw-alert fw-alert-warning">
+                <span class="fw-alert-title">{% translate "Warning" %}</span>
+                <span class="fw-alert-body">{% translate "Moisture below recommended threshold on 3 planters." %}</span>
+            </div>
+            <div class="fw-alert fw-alert-danger">
+                <span class="fw-alert-title">{% translate "Critical" %}</span>
+                <span class="fw-alert-body">{% translate "Sensor offline — Basil line 03 is not reporting." %}</span>
+            </div>
+        </div>
+    </section>
+
+    {# ----------------------------------------------------------------
+       FORMS
+    ---------------------------------------------------------------- #}
+    <section class="fw-section" id="forms">
+        <div class="fw-section-header">
+            <h2 class="fw-section-title">{% translate "Forms" %}</h2>
+            <span class="fw-badge">Django-ready</span>
+        </div>
+        <form class="fw-panel fw-form"
+              hx-post="/ui-kit/sample/"
+              hx-target="#htmx-result"
+              hx-swap="outerHTML">
+            <div class="fw-grid fw-grid-2">
+                <label class="fw-field-group">
+                    <span class="fw-label">{% translate "Planter name" %} <span class="fw-required">*</span></span>
+                    <input class="fw-field" name="name" placeholder="{% translate 'e.g. Greenhouse row A' %}" value="Greenhouse row A">
+                </label>
+                <label class="fw-field-group">
+                    <span class="fw-label">{% translate "Irrigation profile" %}</span>
+                    <select class="fw-select" name="profile">
+                        <option>{% translate "Balanced" %}</option>
+                        <option>{% translate "Dry climate" %}</option>
+                        <option>{% translate "Propagation" %}</option>
+                    </select>
+                </label>
+            </div>
+            <label class="fw-field-group">
+                <span class="fw-label">{% translate "Operator note" %}</span>
+                <textarea class="fw-textarea" name="note">{% translate "Check sensors after the evening irrigation run." %}</textarea>
+                <span class="fw-help">{% translate "Internal note — not visible to clients." %}</span>
+            </label>
+            <label class="fw-check-row">
+                <input type="checkbox" checked>
+                <span>{% translate "Notify team when thresholds are exceeded" %}</span>
+            </label>
+            <div class="fw-actions">
+                <button class="fw-btn fw-btn-ghost" type="reset">{% translate "Reset" %}</button>
+                <button class="fw-btn fw-btn-primary" type="submit">{% translate "Send HTMX sample" %}</button>
+            </div>
+        </form>
+    </section>
+
+    {# ----------------------------------------------------------------
+       HTMX RESULT AREA
+    ---------------------------------------------------------------- #}
+    <div id="htmx-result" class="fw-alert" style="margin-top:var(--fw-space-3)">
+        <span class="fw-alert-title">{% translate "Ready for fragment updates" %}</span>
+        <span class="fw-alert-body fw-muted">{% translate "Submit the form above to replace this block with a server-rendered partial." %}</span>
+    </div>
+
+    {# ----------------------------------------------------------------
+       TABLES
+    ---------------------------------------------------------------- #}
+    <section class="fw-section" id="tables">
+        <div class="fw-section-header">
+            <div>
+                <h2 class="fw-section-title">{% translate "Operational table" %}</h2>
+                <p class="fw-help">{% translate "Dense enough for scanning, with clear state and progress treatment." %}</p>
+            </div>
+            <div class="fw-toolbar">
+                <input class="fw-field fw-search" type="search" placeholder="{% translate 'Search planters' %}">
+            </div>
+        </div>
+        <div class="fw-table-wrap">
+            <table class="fw-table">
+                <thead>
+                    <tr>
+                        <th>{% translate "Planter" %}</th>
+                        <th>{% translate "Zone" %}</th>
+                        <th>{% translate "Moisture" %}</th>
+                        <th>{% translate "Status" %}</th>
+                        <th>{% translate "Last reading" %}</th>
+                        <th class="fw-table-action-col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Basil line 03</strong></td>
+                        <td>Greenhouse A</td>
+                        <td>
+                            <div class="fw-meter" aria-label="82%" data-value="82">
+                                <span class="fw-meter-fill"></span>
+                            </div>
+                        </td>
+                        <td>{% include "partials/status_badge.html" with status="ok" label=_("Healthy") %}</td>
+                        <td class="fw-dimmed">2 min ago</td>
+                        <td><button class="fw-btn fw-btn-secondary fw-btn-sm" type="button">{% translate "Open" %}</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mint shelf 11</strong></td>
+                        <td>Retail room</td>
+                        <td>
+                            <div class="fw-meter" aria-label="44%" data-value="44">
+                                <span class="fw-meter-fill is-warning"></span>
+                            </div>
+                        </td>
+                        <td>{% include "partials/status_badge.html" with status="warning" label=_("Watch") %}</td>
+                        <td class="fw-dimmed">9 min ago</td>
+                        <td><button class="fw-btn fw-btn-secondary fw-btn-sm" type="button">{% translate "Open" %}</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lavender bed 2</strong></td>
+                        <td>Outdoor north</td>
+                        <td>
+                            <div class="fw-meter" aria-label="18%" data-value="18">
+                                <span class="fw-meter-fill is-danger"></span>
+                            </div>
+                        </td>
+                        <td>{% include "partials/status_badge.html" with status="danger" label=_("Dry") %}</td>
+                        <td class="fw-dimmed">18 min ago</td>
+                        <td><button class="fw-btn fw-btn-secondary fw-btn-sm" type="button">{% translate "Open" %}</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    {# ----------------------------------------------------------------
+       EMPTY STATE & SKELETON
+    ---------------------------------------------------------------- #}
+    <section class="fw-section" id="states">
+        <div class="fw-section-header">
+            <h2 class="fw-section-title">{% translate "Empty & loading states" %}</h2>
+        </div>
+        <div class="fw-grid fw-grid-2">
+            <div class="fw-empty">
+                <div class="fw-empty-icon">🌿</div>
+                <p class="fw-empty-title">{% translate "No planters configured" %}</p>
+                <p class="fw-dimmed">{% translate "Add your first planter to start monitoring." %}</p>
+            </div>
+            <div class="fw-card">
+                <div class="fw-skeleton fw-skeleton-text" style="width:40%;height:0.75rem"></div>
+                <div class="fw-skeleton fw-skeleton-text" style="width:70%;height:2rem;margin:0.5rem 0"></div>
+                <div class="fw-skeleton fw-skeleton-block" style="height:8px;margin-top:0.75rem"></div>
+            </div>
+        </div>
+    </section>
+
 {% endblock %}

@@ -1,0 +1,167 @@
+{% extends "tenancy/layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% translate "Provision device" %}{% endblock %}
+{% block topbar_title %}{% translate "Device provisioning" %}{% endblock %}
+
+{% block page_content %}
+    <div class="fw-page-header">
+        <div class="fw-title-block">
+            <span class="fw-eyebrow">{% translate "Platform control plane" %}</span>
+            <h1 class="fw-title">{% translate "Provision device" %}</h1>
+            <p class="fw-subtitle">
+                {% translate "Bind a physical sensor or smart pot to the company tenant that owns it." %}
+            </p>
+        </div>
+        <div class="fw-actions">
+            <a class="fw-btn fw-btn-secondary" href="{% url 'devices_ui:device-fleet' %}">{% translate "Device fleet" %}</a>
+            <a class="fw-btn fw-btn-secondary" href="/admin/">{% translate "Django admin" %}</a>
+        </div>
+    </div>
+
+    {% if provisioned_device %}
+        <section class="fw-section" aria-labelledby="device-result-heading">
+            <div class="fw-panel">
+                <div class="fw-section-header">
+                    <div>
+                        <h2 class="fw-section-title" id="device-result-heading">{% translate "Device ready" %}</h2>
+                        <p class="fw-section-sub">
+                            {{ provisioned_device.name }} / {{ provisioned_device.serial_number }} / {{ provisioned_tenant.name }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="fw-grid fw-grid-2">
+                    <div class="fw-field-group">
+                        <span class="fw-label">{% translate "Tenant schema" %}</span>
+                        <input class="fw-field" type="text" value="{{ provisioned_tenant.schema_name }}" readonly>
+                    </div>
+                    <div class="fw-field-group">
+                        <span class="fw-label">{% translate "MQTT client ID" %}</span>
+                        <input class="fw-field" type="text" value="{{ provisioned_device.mqtt_client_id }}" readonly>
+                    </div>
+                </div>
+
+                {% if provisioned_credential %}
+                    <div class="fw-grid fw-grid-2">
+                        <div class="fw-field-group">
+                            <span class="fw-label">{% translate "API key" %}</span>
+                            <input class="fw-field" type="text" value="{{ provisioned_credential.api_key }}" readonly>
+                        </div>
+                        <div class="fw-field-group">
+                            <span class="fw-label">{% translate "API secret" %}</span>
+                            <input class="fw-field" type="text" value="{{ plaintext_secret }}" readonly>
+                            <span class="fw-help">{% translate "Shown once. Store it in the physical device provisioning record." %}</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    {% endif %}
+
+    <section class="fw-section" aria-labelledby="device-provision-heading">
+        <form class="fw-panel fw-form" method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="fw-section-header">
+                <div>
+                    <h2 class="fw-section-title" id="device-provision-heading">{% translate "Device identity" %}</h2>
+                    <p class="fw-section-sub">{% translate "The device is created inside the selected tenant schema." %}</p>
+                </div>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="fw-alert fw-alert-danger">
+                    <span class="fw-alert-title">{% translate "Please review the form" %}</span>
+                    <span class="fw-alert-body">{{ form.non_field_errors }}</span>
+                </div>
+            {% endif %}
+
+            <label class="fw-field-group">
+                <span class="fw-label">{{ form.owner_tenant.label }}</span>
+                <select class="fw-select {% if form.owner_tenant.errors %}fw-field-error{% endif %}"
+                        name="{{ form.owner_tenant.html_name }}" required>
+                    <option value="">{% translate "Select company tenant" %}</option>
+                    {% for tenant in form.owner_tenant.field.queryset %}
+                        <option value="{{ tenant.pk }}" {% if form.owner_tenant.value|stringformat:"s" == tenant.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ tenant.name }} ({{ tenant.schema_name }})
+                        </option>
+                    {% endfor %}
+                </select>
+                {% for error in form.owner_tenant.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+            </label>
+
+            <div class="fw-grid fw-grid-2">
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.name.label }}</span>
+                    <input class="fw-field {% if form.name.errors %}fw-field-error{% endif %}"
+                           type="text" name="{{ form.name.html_name }}"
+                           value="{{ form.name.value|default_if_none:'' }}" maxlength="160" required>
+                    {% for error in form.name.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+                </label>
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.serial_number.label }}</span>
+                    <input class="fw-field {% if form.serial_number.errors %}fw-field-error{% endif %}"
+                           type="text" name="{{ form.serial_number.html_name }}"
+                           value="{{ form.serial_number.value|default_if_none:'' }}" maxlength="120" required>
+                    {% for error in form.serial_number.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+                </label>
+            </div>
+
+            <div class="fw-grid fw-grid-2">
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.hardware_revision.label }}</span>
+                    <input class="fw-field {% if form.hardware_revision.errors %}fw-field-error{% endif %}"
+                           type="text" name="{{ form.hardware_revision.html_name }}"
+                           value="{{ form.hardware_revision.value|default_if_none:'' }}" maxlength="50">
+                </label>
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.firmware_version.label }}</span>
+                    <input class="fw-field {% if form.firmware_version.errors %}fw-field-error{% endif %}"
+                           type="text" name="{{ form.firmware_version.html_name }}"
+                           value="{{ form.firmware_version.value|default_if_none:'' }}" maxlength="50">
+                </label>
+            </div>
+
+            <div class="fw-grid fw-grid-2">
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.mqtt_client_id.label }}</span>
+                    <input class="fw-field {% if form.mqtt_client_id.errors %}fw-field-error{% endif %}"
+                           type="text" name="{{ form.mqtt_client_id.html_name }}"
+                           value="{{ form.mqtt_client_id.value|default_if_none:'' }}" maxlength="160">
+                    <span class="fw-help">{{ form.mqtt_client_id.help_text }}</span>
+                </label>
+                <label class="fw-field-group">
+                    <span class="fw-label">{{ form.heartbeat_interval_seconds.label }}</span>
+                    <input class="fw-field {% if form.heartbeat_interval_seconds.errors %}fw-field-error{% endif %}"
+                           type="number" name="{{ form.heartbeat_interval_seconds.html_name }}"
+                           value="{{ form.heartbeat_interval_seconds.value|default:60 }}" min="10" max="86400" required>
+                    {% for error in form.heartbeat_interval_seconds.errors %}<span class="fw-help" style="color:var(--fw-danger)">{{ error }}</span>{% endfor %}
+                </label>
+            </div>
+
+            <label class="fw-field-group">
+                <span class="fw-label">{{ form.capabilities.label }}</span>
+                <input class="fw-field {% if form.capabilities.errors %}fw-field-error{% endif %}"
+                       type="text" name="{{ form.capabilities.html_name }}"
+                       value="{{ form.capabilities.value|default_if_none:'' }}">
+                <span class="fw-help">{{ form.capabilities.help_text }}</span>
+            </label>
+
+            <div class="fw-stack">
+                <label class="fw-check-row">
+                    <input type="checkbox" name="{{ form.create_credentials.html_name }}" {% if form.create_credentials.value %}checked{% endif %}>
+                    <span>{{ form.create_credentials.label }}</span>
+                </label>
+                <label class="fw-check-row">
+                    <input type="checkbox" name="{{ form.activate_now.html_name }}" {% if form.activate_now.value %}checked{% endif %}>
+                    <span>{{ form.activate_now.label }}</span>
+                </label>
+            </div>
+
+            <div class="fw-actions">
+                <button class="fw-btn fw-btn-primary" type="submit">{% translate "Provision device" %}</button>
+            </div>
+        </form>
+    </section>
+{% endblock %}

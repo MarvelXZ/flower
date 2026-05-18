@@ -1,0 +1,12 @@
+{% comment %}
+Status badge partial.
+Usage:
+  {% include "partials/status_badge.html" with status="ok" label="Online" %}
+  {% include "partials/status_badge.html" with status="warning" label="Review" %}
+  {% include "partials/status_badge.html" with status="danger" label="Offline" %}
+  {% include "partials/status_badge.html" with status="info" label="Pending" %}
+  {% include "partials/status_badge.html" with status="muted" label="Unknown" %}
+{% endcomment %}
+<span class="fw-status fw-status-{{ status|default:'muted' }}">
+    {{ label }}
+</span>

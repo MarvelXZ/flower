@@ -1,7 +1,7 @@
 {
   "app": {
-    "title": "PlantOps Dashboard",
-    "description": "IoT platform for managing plants and planters."
+    "title": "Flower Dashboard",
+    "description": "Plant care and workspace management platform."
   },
   "language": {
     "aria": "Language selector",
@@ -12,15 +12,15 @@
   "nav": {
     "primary": "Primary",
     "overview": "Overview",
+    "tokens": "Tokens",
     "actions": "Actions",
     "forms": "Forms",
     "tables": "Tables",
     "menu": "Menu"
   },
   "hero": {
-    "eyebrow": "React UI Kit",
-    "title": "PlantOps components",
-    "subtitle": "React screens use the same production classes as Django templates and HTMX fragments.",
+    "eyebrow": "Design system",
+    "subtitle": "Shared interface patterns for Django templates, HTMX fragments, and React screens. Concrete + plants + premium minimalism.",
     "preview": "Preview",
     "newTask": "New task"
   },
@@ -34,9 +34,17 @@
     "automationUptime": "Automation uptime",
     "healthy": "Healthy"
   },
+  "tokens": {
+    "title": "Design tokens",
+    "help": "Core color values shared by the React and Django layers.",
+    "surface": "Surface",
+    "primary": "Primary",
+    "warning": "Warning",
+    "danger": "Critical"
+  },
   "controls": {
-    "title": "Controls",
-    "help": "Buttons, segmented controls, badges, and state chips.",
+    "title": "Buttons, badges & statuses",
+    "help": "Compact and predictable for repeated operational workflows.",
     "timeRange": "Time range",
     "save": "Save",
     "preview": "Preview",
@@ -44,9 +52,23 @@
     "disable": "Disable",
     "refresh": "Refresh",
     "tenantReady": "Tenant ready",
+    "draft": "Draft",
+    "provider": "Provider",
     "online": "Online",
     "delayed": "Delayed",
-    "offline": "Offline"
+    "offline": "Offline",
+    "pending": "Pending"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "info": "Info",
+    "infoBody": "This is an informational alert for system messages.",
+    "success": "Success",
+    "successBody": "The operation completed successfully.",
+    "warning": "Warning",
+    "warningBody": "Moisture below recommended threshold on 3 planters.",
+    "danger": "Critical",
+    "dangerBody": "Sensor offline — Basil line 03 is not reporting."
   },
   "forms": {
     "title": "Forms",
@@ -59,38 +81,40 @@
     "propagation": "Propagation",
     "operatorNote": "Operator note",
     "operatorNoteValue": "Check sensors after the evening irrigation run.",
+    "noteHelp": "Internal note — not visible to clients.",
     "notifyTeam": "Notify team when thresholds are exceeded",
     "reset": "Reset",
     "saveProfile": "Save profile"
   },
   "table": {
     "title": "Operational table",
-    "help": "Reusable table treatment for device and tenant workflows.",
+    "help": "Dense enough for scanning, with clear state and progress treatment.",
     "search": "Search planters",
     "planter": "Planter",
     "zone": "Zone",
     "moisture": "Moisture",
     "status": "Status",
     "lastReading": "Last reading",
-    "open": "Open",
-    "meterAria": "{{value}} percent"
+    "open": "Open"
+  },
+  "states": {
+    "title": "Empty & loading states",
+    "emptyTitle": "No planters configured",
+    "emptyBody": "Add your first planter to start monitoring."
   },
   "planters": {
     "basil": {
       "name": "Basil line 03",
-      "zone": "Greenhouse A",
       "status": "Healthy",
       "last": "2 min ago"
     },
     "mint": {
       "name": "Mint shelf 11",
-      "zone": "Retail room",
       "status": "Watch",
       "last": "9 min ago"
     },
     "lavender": {
       "name": "Lavender bed 2",
-      "zone": "Outdoor north",
       "status": "Dry",
       "last": "18 min ago"
     }

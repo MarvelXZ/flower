@@ -1,0 +1,84 @@
+{% extends "tenancy/layout.html" %}
+{% load i18n %}
+
+{% block page_title %}{% translate "Tenant companies" %}{% endblock %}
+{% block topbar_title %}{% translate "Tenant companies" %}{% endblock %}
+
+{% block page_content %}
+    <div class="fw-page-header">
+        <div class="fw-title-block">
+            <span class="fw-eyebrow">{% translate "Platform" %}</span>
+            <h1 class="fw-title">{% translate "Tenant companies" %}</h1>
+            <p class="fw-subtitle">
+                {% translate "Each real company using Flower is managed as a separate tenant." %}
+            </p>
+        </div>
+        <div class="fw-actions">
+            <a class="fw-btn fw-btn-primary" href="{% url 'tenancy_ui:tenant-create' %}">
+                {% translate "Add tenant company" %}
+            </a>
+        </div>
+    </div>
+
+    <section class="fw-section" aria-labelledby="tenant-list-heading">
+        <div class="fw-section-header">
+            <div>
+                <h2 class="fw-section-title" id="tenant-list-heading">{% translate "Companies" %}</h2>
+                <p class="fw-section-sub">{% translate "Owner, provider, hybrid, and marketplace admin tenants." %}</p>
+            </div>
+        </div>
+
+        {% if tenants %}
+            <div class="fw-table-wrap">
+                <table class="fw-table">
+                    <thead>
+                        <tr>
+                            <th>{% translate "Company" %}</th>
+                            <th>{% translate "Schema" %}</th>
+                            <th>{% translate "Domain" %}</th>
+                            <th>{% translate "Type" %}</th>
+                            <th>{% translate "Status" %}</th>
+                            <th class="fw-table-action-col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tenant in tenants %}
+                            <tr>
+                                <td>
+                                    <strong>{{ tenant.name }}</strong>
+                                    <div class="fw-dimmed">{{ tenant.slug }}</div>
+                                </td>
+                                <td><code>{{ tenant.schema_name }}</code></td>
+                                <td>
+                                    {% with domain=tenant.domains.all|first %}
+                                        {% if domain %}{{ domain.domain }}{% else %}<span class="fw-dimmed">-</span>{% endif %}
+                                    {% endwith %}
+                                </td>
+                                <td>{{ tenant.get_kind_display }}</td>
+                                <td>
+                                    {% if tenant.is_active %}
+                                        {% include "partials/status_badge.html" with status="ok" label=_("Active") %}
+                                    {% else %}
+                                        {% include "partials/status_badge.html" with status="danger" label=_("Inactive") %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a class="fw-btn fw-btn-secondary fw-btn-sm"
+                                       href="{% url 'tenancy_ui:tenant-edit' tenant.pk %}">
+                                        {% translate "Edit" %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="fw-empty">
+                <div class="fw-empty-icon">F</div>
+                <p class="fw-empty-title">{% translate "No tenant companies yet" %}</p>
+                <p class="fw-dimmed">{% translate "Create the first company tenant to start onboarding customers." %}</p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

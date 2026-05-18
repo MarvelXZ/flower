@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% block page_title %}{% translate "Tenants" %}{% endblock %} - Flower{% endblock %}
+
+{% block content %}
+<div class="fw-app">
+    <aside class="fw-sidebar" aria-label="{% translate 'Platform navigation' %}">
+        <a class="fw-brand" href="/">
+            <span class="fw-brand-mark">F</span>
+            <span>Flower</span>
+        </a>
+
+        <nav class="fw-nav">
+            <a class="fw-nav-link" href="/">{% translate "Dashboard" %}</a>
+            <a class="fw-nav-link {% if sidebar_active == 'tenants' %}is-active{% endif %}"
+               href="{% url 'tenancy_ui:tenant-list' %}">
+                {% translate "Tenant companies" %}
+            </a>
+            <a class="fw-nav-link {% if sidebar_active == 'devices' %}is-active{% endif %}"
+               href="{% url 'devices_ui:device-fleet' %}">
+                {% translate "Device fleet" %}
+            </a>
+            <a class="fw-nav-link" href="/admin/">{% translate "Django admin" %}</a>
+            <a class="fw-nav-link" href="/ui-kit/">{% translate "UI kit" %}</a>
+        </nav>
+    </aside>
+
+    <section class="fw-page">
+        <header class="fw-topbar" role="banner">
+            <div class="fw-topbar-left">
+                <span class="fw-dimmed">{% block topbar_title %}{% translate "Tenant onboarding" %}{% endblock %}</span>
+            </div>
+            <div class="fw-topbar-right">
+                <span class="fw-dimmed" style="font-size:0.84rem">{{ request.user.email|default:request.user.username }}</span>
+            </div>
+        </header>
+
+        <div class="fw-page-body">
+            {% if messages %}
+                <div class="fw-stack" style="margin-bottom:var(--fw-space-5)">
+                    {% for message in messages %}
+                        <div class="fw-alert fw-alert-success">
+                            <span class="fw-alert-title">{{ message.tags|default:_("Notice")|title }}</span>
+                            <span class="fw-alert-body">{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block page_content %}{% endblock %}
+        </div>
+    </section>
+</div>
+{% endblock %}

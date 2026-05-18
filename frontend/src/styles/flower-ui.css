@@ -1,0 +1,8 @@
+/* React entry point for Flower design system.
+   Imports the canonical CSS from backend/static so both
+   Django templates and React share identical tokens and components. */
+@import "../../../backend/static/css/flower-ui.css";
+
+.react-root {
+  min-height: 100vh;
+}

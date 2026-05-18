@@ -1,0 +1,111 @@
+{% load i18n %}
+{# Sidebar partial — include inside .fw-app layout #}
+{# Context vars (optional):
+     sidebar_active  — nav item key that should have .is-active (e.g. "dashboard")
+#}
+
+<aside class="fw-sidebar" aria-label="{% translate 'Main navigation' %}">
+
+    <a class="fw-brand" href="/">
+        <span class="fw-brand-mark">F</span>
+        <span>Flower</span>
+    </a>
+
+    <nav class="fw-nav">
+
+        {# ---- Core ---- #}
+        <a class="fw-nav-link {% if sidebar_active == 'dashboard' %}is-active{% endif %}"
+           href="{% url 'dashboard' %}">
+            {% translate "Dashboard" %}
+        </a>
+        <a class="fw-nav-link {% if sidebar_active == 'tenants' %}is-active{% endif %}"
+           href="{% url 'tenancy_ui:tenant-list' %}">
+            {% translate "Tenant companies" %}
+        </a>
+
+        {# ---- Assets ---- #}
+        <div class="fw-nav-group">
+            <span class="fw-nav-group-label">{% translate "Assets" %}</span>
+            <a class="fw-nav-link {% if sidebar_active == 'locations' %}is-active{% endif %}"
+               href="#">
+                {% translate "Locations" %}
+            </a>
+            <a class="fw-nav-link {% if sidebar_active == 'planters' %}is-active{% endif %}"
+               href="#">
+                {% translate "Planters" %}
+            </a>
+            <a class="fw-nav-link {% if sidebar_active == 'plants' %}is-active{% endif %}"
+               href="#">
+                {% translate "Plants" %}
+            </a>
+        </div>
+
+        {# ---- IoT ---- #}
+        <div class="fw-nav-group">
+            <span class="fw-nav-group-label">{% translate "IoT" %}</span>
+            <a class="fw-nav-link {% if sidebar_active == 'devices' %}is-active{% endif %}"
+               href="{% url 'devices_ui:device-fleet' %}">
+                {% translate "Devices" %}
+            </a>
+            <a class="fw-nav-link {% if sidebar_active == 'telemetry' %}is-active{% endif %}"
+               href="#">
+                {% translate "Telemetry" %}
+            </a>
+        </div>
+
+        {# ---- Operations ---- #}
+        <div class="fw-nav-group">
+            <span class="fw-nav-group-label">{% translate "Operations" %}</span>
+            <a class="fw-nav-link {% if sidebar_active == 'alerts' %}is-active{% endif %}"
+               href="#">
+                {% translate "Alerts" %}
+                {% if alert_count %}
+                    <span class="fw-badge fw-badge--count">{{ alert_count }}</span>
+                {% endif %}
+            </a>
+            <a class="fw-nav-link {% if sidebar_active == 'care' %}is-active{% endif %}"
+               href="#">
+                {% translate "Care Schedule" %}
+            </a>
+            <a class="fw-nav-link {% if sidebar_active == 'tasks' %}is-active{% endif %}"
+               href="#">
+                {% translate "Tasks" %}
+            </a>
+        </div>
+
+        {# ---- B2B ---- #}
+        <div class="fw-nav-group">
+            <span class="fw-nav-group-label">{% translate "B2B" %}</span>
+            <a class="fw-nav-link {% if sidebar_active == 'marketplace' %}is-active{% endif %}"
+               href="#">
+                {% translate "Marketplace" %}
+            </a>
+            <a class="fw-nav-link {% if sidebar_active == 'providers' %}is-active{% endif %}"
+               href="#">
+                {% translate "Providers" %}
+            </a>
+        </div>
+
+    </nav>
+
+    {# Footer: account, settings #}
+    <div class="fw-sidebar-footer">
+        <a class="fw-nav-link {% if sidebar_active == 'settings' %}is-active{% endif %}"
+           href="/admin/">
+            {% translate "Django admin" %}
+        </a>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="fw-nav-link fw-nav-logout" type="submit">
+                {% translate "Sign out" %}
+            </button>
+        </form>
+    </div>
+
+    {# Mobile toggle #}
+    <button class="fw-btn fw-btn-secondary fw-mobile-menu" type="button"
+            aria-label="{% translate 'Open menu' %}">
+        ☰
+    </button>
+
+</aside>
